@@ -1,0 +1,6 @@
+tuberlin\mcc\simra\backend\control\FileListController.class
+tuberlin\mcc\simra\backend\WebServer.class
+tuberlin\mcc\simra\backend\Starter.class
+tuberlin\mcc\simra\backend\servlets\UpdateServlet.class
+tuberlin\mcc\simra\backend\servlets\StatusServlet.class
+tuberlin\mcc\simra\backend\servlets\UploadServlet.class
