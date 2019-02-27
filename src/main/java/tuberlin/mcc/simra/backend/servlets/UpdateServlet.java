@@ -1,7 +1,6 @@
 package tuberlin.mcc.simra.backend.servlets;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,9 +14,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-@Path("put")
-public class ResourceServlet {
-    private static Logger logger = LoggerFactory.getLogger(ResourceServlet.class.getName());
+@Path("upload")
+public class UpdateServlet {
+    private static Logger logger = LoggerFactory.getLogger(UpdateServlet.class.getName());
     Date dateToday = new Date();
     HashMap<Integer, String> fileMap = new HashMap<>(500000);
 
@@ -164,9 +163,9 @@ public class ResourceServlet {
     }
 
     public static void main(String[] args) {
-        ResourceServlet resourceServlet = new ResourceServlet();
-        resourceServlet.dateToday = new Date();
-        resourceServlet.writeAndReturnNamePassword("bla", "de", "Ahmet-SerdarKarakaya,JohannisthalerChaussee422,12351Berlin");
+        UpdateServlet updateServlet = new UpdateServlet();
+        updateServlet.dateToday = new Date();
+        updateServlet.writeAndReturnNamePassword("bla", "de", "Ahmet-SerdarKarakaya,JohannisthalerChaussee422,12351Berlin");
     }
 
 }
