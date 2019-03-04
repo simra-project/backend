@@ -1,16 +1,22 @@
 package tuberlin.mcc.simra.backend;
 
-import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.http.HttpVersion;
+import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tuberlin.mcc.simra.backend.servlets.StatusServlet;
 
-import javax.servlet.ServletException;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.file.Paths;
+import java.security.KeyStore;
+import java.util.Arrays;
+
 
 public class WebServer {
 
@@ -34,12 +40,49 @@ public class WebServer {
 
         // jersey
 
-        ResourceConfig config = new ResourceConfig();
-        config.packages("tuberlin.mcc.simra.backend");
-        ServletHolder jersey = new ServletHolder(new ServletContainer(config));
+        ResourceConfig rConfig = new ResourceConfig();
+        rConfig.packages("tuberlin.mcc.simra.backend");
+        ServletHolder jersey = new ServletHolder(new ServletContainer(rConfig));
         servletContext.addServlet(jersey, "/*");
 
 
+        /*
+        try {
+            KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+
+            char[] password = "password".toCharArray();
+            keystore.load(null, password);
+
+            java.nio.file.Path currentRelativePath = Paths.get("");
+            String absolutePath = currentRelativePath.toAbsolutePath().toString();
+            String sp = File.separator;
+            // Store away the keystore.
+            FileOutputStream fos = new FileOutputStream(absolutePath+sp+"ks.keystore");
+            keystore.store(fos, password);
+            fos.close();
+
+            SslContextFactory cf = new SslContextFactory();
+            cf.setKeyStore(keystore);
+            cf.setKeyStorePassword("password");
+
+            HttpConfiguration config = new HttpConfiguration();
+            config.addCustomizer(new SecureRequestCustomizer());
+            config.setSecureScheme("https");
+            config.setSecurePort(8082);
+
+            HttpConfiguration sslConfiguration = new HttpConfiguration(config);
+            sslConfiguration.addCustomizer(new SecureRequestCustomizer());
+            ServerConnector sslConnector = new ServerConnector(server,
+                    new SslConnectionFactory(cf, HttpVersion.HTTP_1_1.toString()),
+                    new HttpConnectionFactory(sslConfiguration));
+            sslConnector.setPort(8082);
+            sslConnector.setName("secured");
+            server.setConnectors(new Connector[]{sslConnector});
+            System.out.println(Arrays.deepToString(server.getConnectors()));
+        } catch (Exception e){
+            logger.error(e.getMessage());
+        }
+        */
 
         // add handlers to HandlerList
         HandlerList handlers = new HandlerList();
@@ -65,6 +108,10 @@ public class WebServer {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        new WebServer().startServer();
     }
 
 

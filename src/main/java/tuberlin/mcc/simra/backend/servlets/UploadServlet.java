@@ -38,7 +38,6 @@ public class UploadServlet {
         String oauth2 = sdf.format(dateTomorrow);
         oauth2 += "mcc_simra";
 
-
         int hash = oauth.hashCode();
         String serverHash = Integer.toHexString(hash);
 
@@ -61,6 +60,9 @@ public class UploadServlet {
         String sp = File.separator;
 
         Integer hash = value.hashCode();
+        if(key.equals("p")){
+           hash = (RandomStringUtils.randomAlphanumeric(30)).hashCode();
+        }
         String password = RandomStringUtils.randomAlphanumeric(10);
 
         java.nio.file.Path currentRelativePath = Paths.get("");
@@ -68,7 +70,6 @@ public class UploadServlet {
 
         if(!FileListController.containsKey(hash)){
             FileListController.updateKeyValue(hash, password, absolutePath + sp + "fileList.csv");
-
 
             if(!FileListController.directoryAlreadyExists(loc)){
                 try {
@@ -78,8 +79,7 @@ public class UploadServlet {
                 }
             }
             FileListController.overWriteContentToFile(absolutePath+sp+loc + sp + hash + ".csv", value);
-
-        return Response.status(200, "data received and stored successfully").build();
+            return Response.status(200, hash + "," + password).build();
         }
         return Response.status(404, "Unable to store file").build();
     }
