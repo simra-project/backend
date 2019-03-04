@@ -4,18 +4,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tuberlin.mcc.simra.backend.servlets.UploadServlet;
 
-import javax.ws.rs.core.Response;
 import java.io.*;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class FileListController {
-    private static HashMap<Integer, String> fileMap = new HashMap<>(500000);
+    private static ConcurrentHashMap<Integer, String> fileMap = new ConcurrentHashMap<>(500000);
 
     private static Logger logger = LoggerFactory.getLogger(UploadServlet.class.getName());
 
     public static void updateKeyValue (Integer key, String value, String filePath) {
         fileMap.put(key, value);
+        appendTextToFile(filePath, key + "," + value);
+        /*
         try(BufferedWriter fos = new BufferedWriter(new FileWriter(filePath))) {
             fileMap.forEach((k, v) -> {
                 try { fos.write(k + "," + v + System.lineSeparator()); }
@@ -24,25 +25,29 @@ public class FileListController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        */
     }
 
     public static boolean containsKey (Integer key) {
         return fileMap.containsKey(key);
     }
 
-    public static Response overWriteContentToFile(String filepath, String content){
+    public static void overWriteContentToFile(String filepath, String content){
         try (BufferedWriter fos = new BufferedWriter(new FileWriter(filepath))) {
             fos.write(content);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(),e);
-            return Response.status(404, "Unable to store file").build();
-
         } catch (IOException e) {
             logger.error(e.getMessage(),e);
-            return Response.status(400, e.getMessage()).build();
         }
-        return Response.status(200, "data received and stored successfully").build();
+    }
+
+    public static void appendTextToFile (String filepath, String content) {
+        try {
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(filepath, true)));
+            out.println(content);
+            out.close();
+        } catch (IOException e) {
+            logger.error(e.getMessage(),e);
+        }
     }
 
     public static Boolean directoryAlreadyExists(String path){
