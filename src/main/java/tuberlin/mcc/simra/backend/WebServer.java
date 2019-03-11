@@ -46,24 +46,24 @@ public class WebServer {
         servletContext.addServlet(jersey, "/*");
 
 
-        /*
+
         try {
             KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
 
-            char[] password = "password".toCharArray();
+            char[] password = "PSptb123".toCharArray();
             keystore.load(null, password);
 
             java.nio.file.Path currentRelativePath = Paths.get("");
             String absolutePath = currentRelativePath.toAbsolutePath().toString();
             String sp = File.separator;
             // Store away the keystore.
-            FileOutputStream fos = new FileOutputStream(absolutePath+sp+"ks.keystore");
+            FileOutputStream fos = new FileOutputStream(absolutePath+sp+"keystore.jks");
             keystore.store(fos, password);
             fos.close();
 
             SslContextFactory cf = new SslContextFactory();
             cf.setKeyStore(keystore);
-            cf.setKeyStorePassword("password");
+            cf.setKeyStorePassword("PSptb123");
 
             HttpConfiguration config = new HttpConfiguration();
             config.addCustomizer(new SecureRequestCustomizer());
@@ -73,16 +73,16 @@ public class WebServer {
             HttpConfiguration sslConfiguration = new HttpConfiguration(config);
             sslConfiguration.addCustomizer(new SecureRequestCustomizer());
             ServerConnector sslConnector = new ServerConnector(server,
-                    new SslConnectionFactory(cf, HttpVersion.HTTP_1_1.toString()),
+                    new SslConnectionFactory(cf, HttpVersion.HTTP_2.toString()),
                     new HttpConnectionFactory(sslConfiguration));
             sslConnector.setPort(8082);
-            sslConnector.setName("secured");
+            sslConnector.setName("secured_simRa");
             server.setConnectors(new Connector[]{sslConnector});
             System.out.println(Arrays.deepToString(server.getConnectors()));
         } catch (Exception e){
             logger.error(e.getMessage());
         }
-        */
+
 
         // add handlers to HandlerList
         HandlerList handlers = new HandlerList();
