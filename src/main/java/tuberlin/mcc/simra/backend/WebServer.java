@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.file.Paths;
 import java.security.KeyStore;
@@ -48,19 +49,20 @@ public class WebServer {
 
 
         try {
-            KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-
-            char[] password = "PSptb123".toCharArray();
-            keystore.load(null, password);
-
             java.nio.file.Path currentRelativePath = Paths.get("");
             String absolutePath = currentRelativePath.toAbsolutePath().toString();
             String sp = File.separator;
+            File f = new File(absolutePath+sp+"keystore.jks");
+            String password = "PSptb123";
+            KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keystore.load(new FileInputStream(absolutePath+sp+"keystore.jks"), password.toCharArray());
+
+            /*
             // Store away the keystore.
             FileOutputStream fos = new FileOutputStream(absolutePath+sp+"keystore.jks");
             keystore.store(fos, password);
             fos.close();
-
+            */
             SslContextFactory cf = new SslContextFactory();
             cf.setKeyStore(keystore);
             cf.setKeyStorePassword("PSptb123");
@@ -73,12 +75,12 @@ public class WebServer {
             HttpConfiguration sslConfiguration = new HttpConfiguration(config);
             sslConfiguration.addCustomizer(new SecureRequestCustomizer());
             ServerConnector sslConnector = new ServerConnector(server,
-                    new SslConnectionFactory(cf, HttpVersion.HTTP_2.toString()),
+                    new SslConnectionFactory(cf, HttpVersion.HTTP_1_1.toString()),
                     new HttpConnectionFactory(sslConfiguration));
             sslConnector.setPort(8082);
             sslConnector.setName("secured_simRa");
             server.setConnectors(new Connector[]{sslConnector});
-            System.out.println(Arrays.deepToString(server.getConnectors()));
+            // System.out.println(Arrays.deepToString(server.getConnectors()));
         } catch (Exception e){
             logger.error(e.getMessage());
         }

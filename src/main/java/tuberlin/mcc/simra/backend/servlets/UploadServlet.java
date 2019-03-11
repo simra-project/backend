@@ -25,7 +25,8 @@ public class UploadServlet {
     @Produces(MediaType.TEXT_PLAIN)
     public Response getResource(@PathParam("key") String key, @QueryParam("loc") @DefaultValue("de") String loc, @QueryParam("clientHash") @DefaultValue("10") String clientHash, String value) {
 
-    // logger.info("key: " + key + " value: " + value + " clientHash: " + clientHash);
+
+     logger.info("key: " + key + " loc: " + loc + " clientHash: " + clientHash + " value: " + value);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
         Date dateToday = new Date();
