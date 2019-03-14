@@ -21,12 +21,13 @@ public class UploadServlet {
 
     @POST
     @Path("{key}")
-    @Consumes({MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN})
+    @Consumes({MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN})
     @Produces(MediaType.TEXT_PLAIN)
-    public Response getResource(@PathParam("key") String key, @QueryParam("loc") @DefaultValue("de") String loc, @QueryParam("clientHash") @DefaultValue("10") String clientHash, String value) {
+    public Response getResource(@PathParam("key") String key, @QueryParam(("version")) String version, @QueryParam("loc") @DefaultValue("de") String loc, @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-
-     logger.info("key: " + key + " loc: " + loc + " clientHash: " + clientHash + " value: " + value);
+        logger.info("wrong neighborhood");
+        /*
+     // logger.info("key: " + key + " version: " + version + " loc: " + loc + " clientHash: " + clientHash + " content: " + content);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
         Date dateToday = new Date();
@@ -47,21 +48,22 @@ public class UploadServlet {
 
         logger.info("dateToday: " + dateToday);
         logger.info("beforeHash: " + oauth);
-        logger.info("key: " + key + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
+        logger.info("key: " + key + " version: " + version + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
         if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))){
             return Response.status(400, "not authorized").build();
         }
 
-        return writeAndReturnNamePassword(key, loc, value);
-
+        return writeAndReturnNamePassword(key, version, loc, content);
+        */
+        return Response.status(400, "wrong neighborhood").build();
     }
 
-    // key: filename, value: content of the file
-    private Response writeAndReturnNamePassword(String key, String loc, String value){
+    // key: filename, content: content of the file
+    private Response writeAndReturnNamePassword(String key, String version, String loc, String content){
         String sp = File.separator;
-
-        Integer hash = value.hashCode();
-        if(key.equals("p")){
+        String fileBody = content.substring(content.indexOf(System.lineSeparator())+1);
+        Integer hash = fileBody.hashCode();
+        if(key.equals("profile.csv")){
            hash = (RandomStringUtils.randomAlphanumeric(30)).hashCode();
         }
         String password = RandomStringUtils.randomAlphanumeric(10);
@@ -70,16 +72,30 @@ public class UploadServlet {
         String absolutePath = currentRelativePath.toAbsolutePath().toString();
 
         if(!FileListController.containsKey(hash)){
-            FileListController.updateKeyValue(hash, password, absolutePath + sp + "fileList.csv");
 
-            if(!FileListController.directoryAlreadyExists(loc)){
+            String directory;
+            if (key.equals("profile.csv")) {
+                directory = version + sp + loc + sp + "Profiles";
+                FileListController.updateKeyValue(hash, password, absolutePath + sp + "fileList.csv");
+            } else if (key.startsWith("CRASH")) {
+                directory = version + sp + loc + sp + "CRASH";
+            } else {
+                directory = version + sp + loc + sp + "Rides";
+                FileListController.updateKeyValue(hash, password, absolutePath + sp + "fileList.csv");
+            }
+            if(!FileListController.directoryAlreadyExists(directory)){
                 try {
-                    Files.createDirectories(Paths.get(loc));
+                    Files.createDirectories(Paths.get(directory));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            FileListController.overWriteContentToFile(absolutePath+sp+loc + sp + hash + ".csv", value);
+            if (key.startsWith("CRASH")) {
+                FileListController.overWriteContentToFile(absolutePath + sp + directory + sp + key + ".csv", content);
+            } else {
+                FileListController.overWriteContentToFile(absolutePath + sp + directory + sp + hash + ".csv", content);
+            }
+
             return Response.status(200, hash + "," + password).build();
         }
         return Response.status(404, "Unable to store file").build();
