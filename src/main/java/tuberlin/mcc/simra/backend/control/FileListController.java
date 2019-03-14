@@ -28,6 +28,18 @@ public class FileListController {
         */
     }
 
+    public static Boolean checkKeyValue(Integer key, String value) {
+        if (!containsKey(key)) {
+            return false;
+        }
+        String actualValue = fileMap.get(key);
+        if (actualValue.equals(value)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static boolean containsKey (Integer key) {
         return fileMap.containsKey(key);
     }
@@ -66,4 +78,5 @@ public class FileListController {
         }
         return false;
     }
+
 }
