@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 import static tuberlin.mcc.simra.backend.control.FileListController.checkKeyValue;
@@ -81,7 +82,13 @@ public class UploadServlet {
                 directory = version + sp + loc + sp + "Profiles";
                 FileListController.updateKeyValue(hash, password, absolutePath + sp + "fileList.csv");
             } else if (fileName.startsWith("CRASH")) {
-                directory = version + sp + loc + sp + "CRASH";
+                String ts = "101";
+                try {
+                    ts = fileName.split("_")[1];
+                    } catch (ArrayIndexOutOfBoundsException a) {
+                    a.printStackTrace();
+                }
+                directory = version + sp + loc + sp + "CRASH" + sp + ts;
             } else {
                 directory = version + sp + loc + sp + "Rides";
                 FileListController.updateKeyValue(hash, password, absolutePath + sp + "fileList.csv");
@@ -94,6 +101,8 @@ public class UploadServlet {
                 }
             }
             if (fileName.startsWith("CRASH")) {
+                String[] fileNameLineArray = fileName.split("_");
+                fileName = Arrays.toString(Arrays.copyOfRange(fileNameLineArray,2,(fileNameLineArray.length))).replace("[","").replace(",","").replace("]","");
                 FileListController.overWriteContentToFile(absolutePath + sp + directory + sp + fileName + ".csv", content);
             } else {
                 FileListController.overWriteContentToFile(absolutePath + sp + directory + sp + hash + ".csv", content);
