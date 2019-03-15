@@ -45,7 +45,7 @@ public class FileListController {
     }
 
     public static void overWriteContentToFile(String filepath, String content){
-        try (BufferedWriter fos = new BufferedWriter(new FileWriter(filepath))) {
+        try (BufferedWriter fos = new BufferedWriter(new FileWriter(filepath, false))) {
             fos.write(content);
         } catch (IOException e) {
             logger.error(e.getMessage(),e);
@@ -77,6 +77,24 @@ public class FileListController {
             }
         }
         return false;
+    }
+
+    public static void loadFileCSV(String pathToFile) {
+        logger.info("loading fileList.csv under path: " + pathToFile);
+        File fileCSV = new File(pathToFile);
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileCSV)))) {
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                String[] actualLine = line.split(",");
+                if (actualLine.length == 2) {
+                    fileMap.put(Integer.valueOf(actualLine[0]),actualLine[1]);
+                }
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
     }
 
 }

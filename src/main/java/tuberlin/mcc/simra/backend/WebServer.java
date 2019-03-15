@@ -18,6 +18,8 @@ import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.util.Arrays;
 
+import static tuberlin.mcc.simra.backend.control.FileListController.loadFileCSV;
+
 
 public class WebServer {
 
@@ -34,6 +36,14 @@ public class WebServer {
 
         server = new Server(port);
 
+        java.nio.file.Path currentRelativePath = Paths.get("");
+        String absolutePath = currentRelativePath.toAbsolutePath().toString();
+        String sp = File.separator;
+
+        // reading fileList.csv
+        loadFileCSV(absolutePath+sp+"fileList.csv");
+
+
         // servlet handlers
         ServletContextHandler servletContext =
                 new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -49,10 +59,6 @@ public class WebServer {
 
 
         try {
-            java.nio.file.Path currentRelativePath = Paths.get("");
-            String absolutePath = currentRelativePath.toAbsolutePath().toString();
-            String sp = File.separator;
-            File f = new File(absolutePath+sp+"keystore.jks");
             String password = "PSptb123";
             KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
             keystore.load(new FileInputStream(absolutePath+sp+"keystore.jks"), password.toCharArray());

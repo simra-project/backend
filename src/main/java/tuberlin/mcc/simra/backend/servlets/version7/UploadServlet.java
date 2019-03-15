@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static tuberlin.mcc.simra.backend.control.FileListController.checkKeyValue;
+import static tuberlin.mcc.simra.backend.control.FileListController.overWriteContentToFile;
 
 @SuppressWarnings("Duplicates")
 @Path("7")
@@ -131,7 +132,7 @@ public class UploadServlet {
 
         logger.info("dateToday: " + dateToday);
         logger.info("beforeHash: " + oauth);
-        logger.info("fileHash: " + fileHash + " version: 7" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
+        logger.info("fileHash: " + fileHash + " filePassword: " + filePassword + " version: 7" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2 + " content: " + content);
         if (((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash)))||(!checkKeyValue(Integer.valueOf(fileHash),filePassword))){
             return Response.status(400, "not authorized").build();
         }
@@ -144,44 +145,31 @@ public class UploadServlet {
     // fileHash: filename, content: content of the file
     private Response overWriteAndReturnStatus(String fileHash, String version, String loc, String content){
         String sp = File.separator;
-        String fileBody = content.substring(content.indexOf(System.lineSeparator())+1);
-        Integer hash = fileBody.hashCode();
-        if(fileHash.equals("profile.csv")){
-            hash = (RandomStringUtils.randomAlphanumeric(30)).hashCode();
-        }
-        String password = RandomStringUtils.randomAlphanumeric(10);
 
         java.nio.file.Path currentRelativePath = Paths.get("");
         String absolutePath = currentRelativePath.toAbsolutePath().toString();
 
-        if(!FileListController.containsKey(hash)){
+        String directory;
 
-            String directory;
-            if (fileHash.equals("profile.csv")) {
-                directory = version + sp + loc + sp + "Profiles";
-                FileListController.updateKeyValue(hash, password, absolutePath + sp + "fileList.csv");
-            } else if (fileHash.startsWith("CRASH")) {
-                directory = version + sp + loc + sp + "CRASH";
-            } else {
-                directory = version + sp + loc + sp + "Rides";
-                FileListController.updateKeyValue(hash, password, absolutePath + sp + "fileList.csv");
-            }
-            if(!FileListController.directoryAlreadyExists(directory)){
-                try {
-                    Files.createDirectories(Paths.get(directory));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (fileHash.startsWith("CRASH")) {
-                FileListController.overWriteContentToFile(absolutePath + sp + directory + sp + fileHash + ".csv", content);
-            } else {
-                FileListController.overWriteContentToFile(absolutePath + sp + directory + sp + hash + ".csv", content);
-            }
-
-            return Response.status(200, hash + "," + password).build();
+        if (fileHash.startsWith("profile.csv")) {
+            directory = version + sp + loc + sp + "Profiles";
+            fileHash = fileHash.replace("profile.csv", "");
+        } else {
+            directory = version + sp + loc + sp + "Rides";
         }
-        return Response.status(404, "Unable to store file").build();
+        if(!FileListController.directoryAlreadyExists(directory)){
+            try {
+                Files.createDirectories(Paths.get(directory));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        logger.info("writing to filePath: " + absolutePath + sp + directory + sp + fileHash + ".csv");
+        logger.info("writing content: " + content);
+        FileListController.overWriteContentToFile(absolutePath + sp + directory + sp + fileHash + ".csv", content);
+
+        return Response.status(200, "OK").build();
     }
 
 
