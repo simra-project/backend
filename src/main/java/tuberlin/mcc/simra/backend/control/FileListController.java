@@ -83,6 +83,7 @@ public class FileListController {
         logger.info("loading fileList.csv under path: " + pathToFile);
         File fileCSV = new File(pathToFile);
 
+
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileCSV)))) {
             String line;
 
@@ -92,8 +93,10 @@ public class FileListController {
                     fileMap.put(actualLine[0],actualLine[1]);
                 }
             }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+        } catch (FileNotFoundException fnfe) {
+            overWriteContentToFile(pathToFile,"");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

@@ -66,9 +66,9 @@ public class UploadServlet {
     private Response writeAndReturnNamePassword(String fileName, String version, String loc, String content){
         String sp = File.separator;
         String fileBody = content.substring(content.indexOf(System.lineSeparator())+1);
-        String hash = "VM3_" + fileBody.hashCode();
+        String hash = "VM2_" + fileBody.hashCode();
         if(fileName.equals("profile.csv")){
-           hash = "VM3_" + (RandomStringUtils.randomAlphanumeric(30)).hashCode();
+           hash = "VM2_" + (RandomStringUtils.randomAlphanumeric(30)).hashCode();
         }
         String password = RandomStringUtils.randomAlphanumeric(10);
 
