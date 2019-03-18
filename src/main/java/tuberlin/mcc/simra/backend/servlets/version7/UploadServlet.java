@@ -66,9 +66,9 @@ public class UploadServlet {
     private Response writeAndReturnNamePassword(String fileName, String version, String loc, String content){
         String sp = File.separator;
         String fileBody = content.substring(content.indexOf(System.lineSeparator())+1);
-        Integer hash = fileBody.hashCode();
+        String hash = "VM3_" + fileBody.hashCode();
         if(fileName.equals("profile.csv")){
-           hash = (RandomStringUtils.randomAlphanumeric(30)).hashCode();
+           hash = "VM3_" + (RandomStringUtils.randomAlphanumeric(30)).hashCode();
         }
         String password = RandomStringUtils.randomAlphanumeric(10);
 
@@ -142,7 +142,7 @@ public class UploadServlet {
         logger.info("dateToday: " + dateToday);
         logger.info("beforeHash: " + oauth);
         logger.info("fileHash: " + fileHash + " filePassword: " + filePassword + " version: 7" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2 + " content: " + content);
-        if (((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash)))||(!checkKeyValue(Integer.valueOf(fileHash),filePassword))){
+        if (((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash)))||(!checkKeyValue(fileHash,filePassword))){
             return Response.status(400, "not authorized").build();
         }
 
@@ -160,7 +160,7 @@ public class UploadServlet {
 
         String directory;
 
-        if (fileHash.startsWith("profile.csv")) {
+        if (fileHash.contains("profile.csv")) {
             directory = version + sp + loc + sp + "Profiles";
             fileHash = fileHash.replace("profile.csv", "");
         } else {
