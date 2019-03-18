@@ -9,11 +9,11 @@ import java.nio.file.Paths;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FileListController {
-    private static ConcurrentHashMap<Integer, String> fileMap = new ConcurrentHashMap<>(500000);
+    private static ConcurrentHashMap<String, String> fileMap = new ConcurrentHashMap<>(500000);
 
     private static Logger logger = LoggerFactory.getLogger(UploadServlet.class.getName());
 
-    public static void updateKeyValue (Integer key, String value, String filePath) {
+    public static void updateKeyValue (String key, String value, String filePath) {
         fileMap.put(key, value);
         appendTextToFile(filePath, key + "," + value);
         /*
@@ -28,7 +28,7 @@ public class FileListController {
         */
     }
 
-    public static Boolean checkKeyValue(Integer key, String value) {
+    public static Boolean checkKeyValue(String key, String value) {
         if (!containsKey(key)) {
             return false;
         }
@@ -40,7 +40,7 @@ public class FileListController {
         }
     }
 
-    public static boolean containsKey (Integer key) {
+    public static boolean containsKey (String key) {
         return fileMap.containsKey(key);
     }
 
@@ -89,7 +89,7 @@ public class FileListController {
             while ((line = br.readLine()) != null) {
                 String[] actualLine = line.split(",");
                 if (actualLine.length == 2) {
-                    fileMap.put(Integer.valueOf(actualLine[0]),actualLine[1]);
+                    fileMap.put(actualLine[0],actualLine[1]);
                 }
             }
         } catch (IOException ioe) {
