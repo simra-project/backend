@@ -34,7 +34,7 @@ public class UploadServlet {
     @Produces(MediaType.TEXT_PLAIN)
     public Response uploadPost(@QueryParam("fileName") String fileName, @QueryParam("loc") @DefaultValue("de") String loc, @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        String[] serverHashes = getHashes("mcc_simra");
+        String[] serverHashes = getHashes();
         String serverHash = serverHashes[0];
         String serverHash2 = serverHashes[1];
         logger.info("fileName: " + fileName + " version: 9" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
@@ -103,7 +103,7 @@ public class UploadServlet {
     @Produces(MediaType.TEXT_PLAIN)
     public Response updatePut(@QueryParam("fileHash") String fileHash, @QueryParam("filePassword") String filePassword, @QueryParam("loc") @DefaultValue("Berlin") String loc, @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        String[] serverHashes = getHashes("mcc_simra");
+        String[] serverHashes = getHashes();
         String serverHash = serverHashes[0];
         String serverHash2 = serverHashes[1];
         logger.info("fileHash: " + fileHash + " filePassword: " + filePassword + " version: 9" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
@@ -149,7 +149,7 @@ public class UploadServlet {
     @Path("version")
     @Produces(MediaType.TEXT_PLAIN)
     public Response checkVersion(@QueryParam("clientHash") @DefaultValue("10") String clientHash) {
-        String[] serverHashes = getHashes("mcc_simra");
+        String[] serverHashes = getHashes();
         String serverHash = serverHashes[0];
         String serverHash2 = serverHashes[1];
         logger.info("version: 9" + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
