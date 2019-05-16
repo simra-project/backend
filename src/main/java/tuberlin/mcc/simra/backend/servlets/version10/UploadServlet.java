@@ -39,10 +39,10 @@ public class UploadServlet {
     @Produces(MediaType.TEXT_PLAIN)
     public Response uploadRide(@QueryParam("loc") @DefaultValue("de") String loc, @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        String[] serverHashes = getHashes("Ytjn5yv5xax6Dbhj");
+        String[] serverHashes = getHashes();
         String serverHash = serverHashes[0];
         String serverHash2 = serverHashes[1];
-        logger.info("ride upload version: 10" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
+        logger.info("ride upload version: " + INTERFACE_VERSION + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
         if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))){
             return Response.status(400, "not authorized").build();
         }
@@ -86,10 +86,10 @@ public class UploadServlet {
     @Produces(MediaType.TEXT_PLAIN)
     public Response updateRide(@QueryParam("fileHash") String fileHash, @QueryParam("filePassword") String filePassword, @QueryParam("loc") @DefaultValue("Berlin") String loc, @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        String[] serverHashes = getHashes("Ytjn5yv5xax6Dbhj");
+        String[] serverHashes = getHashes();
         String serverHash = serverHashes[0];
         String serverHash2 = serverHashes[1];
-        logger.info("fileHash: " + fileHash + " filePassword: " + filePassword + " version: 10" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
+        logger.info("fileHash: " + fileHash + " filePassword: " + filePassword + " version: " + INTERFACE_VERSION + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
         if (((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash)))||(!checkKeyValue(fileHash,filePassword))){
             return Response.status(400, "not authorized").build();
         }
@@ -120,10 +120,10 @@ public class UploadServlet {
     @Produces(MediaType.TEXT_PLAIN)
     public Response uploadProfile(@QueryParam("loc") @DefaultValue("de") String loc, @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        String[] serverHashes = getHashes("Ytjn5yv5xax6Dbhj");
+        String[] serverHashes = getHashes();
         String serverHash = serverHashes[0];
         String serverHash2 = serverHashes[1];
-        logger.info("profile upload version: 10" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
+        logger.info("profile upload version: " + INTERFACE_VERSION + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
         if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))){
             return Response.status(400, "not authorized").build();
         }
@@ -163,10 +163,10 @@ public class UploadServlet {
     @Produces(MediaType.TEXT_PLAIN)
     public Response updateProfile(@QueryParam("fileHash") String fileHash, @QueryParam("filePassword") String filePassword, @QueryParam("loc") @DefaultValue("Berlin") String loc, @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        String[] serverHashes = getHashes("Ytjn5yv5xax6Dbhj");
+        String[] serverHashes = getHashes();
         String serverHash = serverHashes[0];
         String serverHash2 = serverHashes[1];
-        logger.info("fileHash: " + fileHash + " filePassword: " + filePassword + " version: 10" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
+        logger.info("fileHash: " + fileHash + " filePassword: " + filePassword + " version: " + INTERFACE_VERSION + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
         if (((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash)))||(!checkKeyValue(fileHash.replace("profile.csv",""),filePassword))){
             return Response.status(400, "not authorized").build();
         }
@@ -199,10 +199,10 @@ public class UploadServlet {
     @Produces(MediaType.TEXT_PLAIN)
     public Response uploadCrashLog(@QueryParam("loc") @DefaultValue("de") String loc, @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        String[] serverHashes = getHashes("Ytjn5yv5xax6Dbhj");
+        String[] serverHashes = getHashes();
         String serverHash = serverHashes[0];
         String serverHash2 = serverHashes[1];
-        logger.info("crash upload version: 10" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
+        logger.info("crash upload version: " + INTERFACE_VERSION + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
         if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))){
             return Response.status(400, "not authorized").build();
         }
@@ -236,16 +236,16 @@ public class UploadServlet {
     @Produces(MediaType.TEXT_PLAIN)
     public Response updatePut(@QueryParam("fileHash") String fileHash, @QueryParam("filePassword") String filePassword, @QueryParam("loc") @DefaultValue("Berlin") String loc, @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        String[] serverHashes = getHashes("Ytjn5yv5xax6Dbhj");
+        String[] serverHashes = getHashes();
         String serverHash = serverHashes[0];
         String serverHash2 = serverHashes[1];
-        logger.info("fileHash: " + fileHash + " filePassword: " + filePassword + " version: 10" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
+        logger.info("fileHash: " + fileHash + " filePassword: " + filePassword + " version: " + INTERFACE_VERSION + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
         if (((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash)))||(!checkKeyValue(fileHash.replace("profile.csv",""),filePassword))){
             return Response.status(400, "not authorized").build();
         }
 
 
-        return overWriteAndReturnStatus(fileHash, "10", loc, content);
+        return overWriteAndReturnStatus(fileHash, String.valueOf(INTERFACE_VERSION), loc, content);
 
     }
 
@@ -287,10 +287,10 @@ public class UploadServlet {
     @Consumes(MediaType.TEXT_PLAIN)
     public Response checkVersion(@QueryParam("clientHash") @DefaultValue("10") String clientHash) {
 
-        String[] serverHashes = getHashes("Ytjn5yv5xax6Dbhj");
+        String[] serverHashes = getHashes();
         String serverHash = serverHashes[0];
         String serverHash2 = serverHashes[1];
-        logger.info("version: 10" + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
+        logger.info("version: " + INTERFACE_VERSION + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
         if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))){
             return Response.status(400, "not authorized").build();
         }
