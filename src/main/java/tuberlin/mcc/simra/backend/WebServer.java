@@ -63,12 +63,6 @@ public class WebServer {
             KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
             keystore.load(new FileInputStream(absolutePath+sp+"keystore.jks"), password.toCharArray());
 
-            /*
-            // Store away the keystore.
-            FileOutputStream fos = new FileOutputStream(absolutePath+sp+"keystore.jks");
-            keystore.store(fos, password);
-            fos.close();
-            */
             SslContextFactory cf = new SslContextFactory();
             cf.setKeyStore(keystore);
             cf.setKeyStorePassword("PSptb123");
