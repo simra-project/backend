@@ -1,9 +1,10 @@
-package tuberlin.mcc.simra.backend.servlets.version7;
+package tuberlin.mcc.simra.backend.servlets.version9;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tuberlin.mcc.simra.backend.control.FileListController;
+import tuberlin.mcc.simra.backend.control.Util;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -17,13 +18,15 @@ import java.util.Arrays;
 import java.util.Date;
 
 import static tuberlin.mcc.simra.backend.control.FileListController.checkKeyValue;
-import static tuberlin.mcc.simra.backend.control.FileListController.overWriteContentToFile;
+import static tuberlin.mcc.simra.backend.control.SimRauthenticator.getHashes;
+import static tuberlin.mcc.simra.backend.control.Util.*;
 
 @SuppressWarnings("Duplicates")
-@Path("7")
+@Path("9")
 public class UploadServlet {
 
     private static Logger logger = LoggerFactory.getLogger(UploadServlet.class.getName());
+
 
     @POST
     @Path("upload")
@@ -31,34 +34,15 @@ public class UploadServlet {
     @Produces(MediaType.TEXT_PLAIN)
     public Response uploadPost(@QueryParam("fileName") String fileName, @QueryParam("loc") @DefaultValue("de") String loc, @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-
-     // logger.info("fileName: " + fileName + " version: " + version + " loc: " + loc + " clientHash: " + clientHash + " content: " + content);
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-        Date dateToday = new Date();
-
-        String oauth = sdf.format(dateToday);
-
-        oauth += "mcc_simra";
-
-        Date dateTomorrow = new Date(dateToday.getTime()+(1000*24*60*60));
-        String oauth2 = sdf.format(dateTomorrow);
-        oauth2 += "mcc_simra";
-
-        int hash = oauth.hashCode();
-        String serverHash = Integer.toHexString(hash);
-
-        int hash2 = oauth2.hashCode();
-        String serverHash2 = Integer.toHexString(hash2);
-
-        logger.info("dateToday: " + dateToday);
-        logger.info("beforeHash: " + oauth);
-        logger.info("fileName: " + fileName + " version: 7" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
+        String[] serverHashes = getHashes("mcc_simra");
+        String serverHash = serverHashes[0];
+        String serverHash2 = serverHashes[1];
+        logger.info("fileName: " + fileName + " version: 9" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
         if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))){
             return Response.status(400, "not authorized").build();
         }
 
-        return writeAndReturnNamePassword(fileName, "7", loc, content);
+        return writeAndReturnNamePassword(fileName, "9", loc, content);
 
     }
 
@@ -93,7 +77,7 @@ public class UploadServlet {
                 directory = version + sp + loc + sp + "Rides";
                 FileListController.updateKeyValue(hash, password, absolutePath + sp + "fileList.csv");
             }
-            if(!FileListController.directoryAlreadyExists(directory)){
+            if(!directoryAlreadyExists(directory)){
                 try {
                     Files.createDirectories(Paths.get(directory));
                 } catch (IOException e) {
@@ -103,14 +87,14 @@ public class UploadServlet {
             if (fileName.startsWith("CRASH")) {
                 String[] fileNameLineArray = fileName.split("_");
                 fileName = Arrays.toString(Arrays.copyOfRange(fileNameLineArray,2,(fileNameLineArray.length))).replace("[","").replace(",","").replace("]","");
-                FileListController.overWriteContentToFile(absolutePath + sp + directory + sp + fileName + ".csv", content);
+                overWriteContentToFile(absolutePath + sp + directory + sp + fileName, content);
             } else {
-                FileListController.overWriteContentToFile(absolutePath + sp + directory + sp + hash + ".csv", content);
+                overWriteContentToFile(absolutePath + sp + directory + sp + hash, content);
             }
 
             return Response.status(200, hash + "," + password).build();
         }
-        return Response.status(404, "Unable to store file").build();
+        return Response.status(404, "File not found").build();
     }
 
     @PUT
@@ -119,35 +103,16 @@ public class UploadServlet {
     @Produces(MediaType.TEXT_PLAIN)
     public Response updatePut(@QueryParam("fileHash") String fileHash, @QueryParam("filePassword") String filePassword, @QueryParam("loc") @DefaultValue("Berlin") String loc, @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-
-        // logger.info("fileHash: " + fileHash + " version: " + version + " loc: " + loc + " clientHash: " + clientHash + " content: " + content);
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-        Date dateToday = new Date();
-
-        String oauth = sdf.format(dateToday);
-
-        oauth += "mcc_simra";
-
-        Date dateTomorrow = new Date(dateToday.getTime()+(1000*24*60*60));
-        String oauth2 = sdf.format(dateTomorrow);
-        oauth2 += "mcc_simra";
-
-        int hash = oauth.hashCode();
-        String serverHash = Integer.toHexString(hash);
-
-        int hash2 = oauth2.hashCode();
-        String serverHash2 = Integer.toHexString(hash2);
-
-        logger.info("dateToday: " + dateToday);
-        logger.info("beforeHash: " + oauth);
-        logger.info("fileHash: " + fileHash + " filePassword: " + filePassword + " version: 7" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2 + " content: " + content);
-        if (((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash)))||(!checkKeyValue(fileHash,filePassword))){
+        String[] serverHashes = getHashes("mcc_simra");
+        String serverHash = serverHashes[0];
+        String serverHash2 = serverHashes[1];
+        logger.info("fileHash: " + fileHash + " filePassword: " + filePassword + " version: 9" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
+        if (((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash)))||(!checkKeyValue(fileHash.replace("profile.csv",""),filePassword))){
             return Response.status(400, "not authorized").build();
         }
 
 
-        return overWriteAndReturnStatus(fileHash, "7", loc, content);
+        return overWriteAndReturnStatus(fileHash, "9", loc, content);
 
     }
 
@@ -166,7 +131,7 @@ public class UploadServlet {
         } else {
             directory = version + sp + loc + sp + "Rides";
         }
-        if(!FileListController.directoryAlreadyExists(directory)){
+        if(!directoryAlreadyExists(directory)){
             try {
                 Files.createDirectories(Paths.get(directory));
             } catch (IOException e) {
@@ -174,21 +139,33 @@ public class UploadServlet {
             }
         }
 
-        logger.info("writing to filePath: " + absolutePath + sp + directory + sp + fileHash + ".csv");
-        logger.info("writing content: " + content);
-        FileListController.overWriteContentToFile(absolutePath + sp + directory + sp + fileHash + ".csv", content);
+        logger.info("writing to filePath: " + absolutePath + sp + directory + sp + fileHash);
+        overWriteContentToFile(absolutePath + sp + directory + sp + fileHash, content);
 
         return Response.status(200, "OK").build();
     }
 
+    @GET
+    @Path("version")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response checkVersion(@QueryParam("clientHash") @DefaultValue("10") String clientHash) {
+        String[] serverHashes = getHashes("mcc_simra");
+        String serverHash = serverHashes[0];
+        String serverHash2 = serverHashes[1];
+        logger.info("version: 9" + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
+        if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))){
+            return Response.status(400, "not authorized").build();
+        }
+        java.nio.file.Path currentRelativePath = Paths.get("");
+        String absolutePath = currentRelativePath.toAbsolutePath().toString();
+        String sp = File.separator;
 
-
-    /*
-    public static void main(String[] args) {
-        UploadServlet resourceServlet = new UploadServlet();
-        resourceServlet.dateToday = new Date();
-        resourceServlet.writeAndReturnNamePassword("bla", "de", "Ahmet-SerdarKarakaya,JohannisthalerChaussee422,12351Berlin");
+        String[] responseArray = getConfigValues(new String[] {"critical","newestAppVersion","urlToNewestAPK"},absolutePath+sp+"simRa_backend.config" );
+        if (responseArray != null && responseArray.length > 2) {
+            return Response.status(200,responseArray[0] + "splitter" + responseArray[1] + "splitter" + responseArray[2]).build();
+        } else {
+            return Response.status(404, "ERROR: config could not be read").build();
+        }
     }
-    */
 
 }

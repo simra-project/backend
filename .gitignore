@@ -1,3 +1,5 @@
 
 target/maven-archiver/pom.properties
 .idea/workspace.xml
+target/maven-archiver/pom.properties
+*.class
