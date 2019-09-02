@@ -1,0 +1,8 @@
+
+*.properties
+*.lst
+*.class
+*.jar
+out/*
+target/*
+.idea/*
