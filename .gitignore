@@ -1,9 +1,7 @@
 
-target/maven-archiver/pom.properties
-.idea/workspace.xml
-target/maven-archiver/pom.properties
-*.class
 *.properties
-
 *.lst
-/.idea/workspace.xml
+*.class
+*.jar
+out/*
+target/*
