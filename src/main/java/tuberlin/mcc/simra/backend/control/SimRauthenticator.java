@@ -1,8 +1,5 @@
 package tuberlin.mcc.simra.backend.control;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
 import java.io.*;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
