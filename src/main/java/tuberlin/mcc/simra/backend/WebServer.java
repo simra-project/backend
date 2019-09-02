@@ -13,10 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.nio.file.Paths;
 import java.security.KeyStore;
-import java.util.Arrays;
 
 import static tuberlin.mcc.simra.backend.control.FileListController.loadFileCSV;
 import static tuberlin.mcc.simra.backend.control.Util.getConfigValues;
