@@ -5,3 +5,4 @@
 *.jar
 out/*
 target/*
+.idea/*
