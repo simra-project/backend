@@ -4,7 +4,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tuberlin.mcc.simra.backend.control.FileListController;
-import tuberlin.mcc.simra.backend.control.Util;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -13,9 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 
 import static tuberlin.mcc.simra.backend.control.FileListController.checkKeyValue;
 import static tuberlin.mcc.simra.backend.control.SimRauthenticator.getHashes;
