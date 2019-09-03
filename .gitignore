@@ -8,5 +8,4 @@ target/*
 *.jks
 simRa_security.config
 *.iml
-simRa_backend.config
 logFile.log
