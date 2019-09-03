@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tuberlin.mcc.simra.backend.control.FileListController;
 
-import javax.validation.constraints.Null;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -13,9 +12,6 @@ import javax.ws.rs.core.StreamingOutput;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
 
 import static java.lang.System.currentTimeMillis;
 import static tuberlin.mcc.simra.backend.control.FileListController.checkKeyValue;
@@ -39,11 +35,11 @@ public class UploadServlet {
     @Produces(MediaType.TEXT_PLAIN)
     public Response uploadRide(@QueryParam("loc") @DefaultValue("de") String loc, @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        String[] serverHashes = getHashes("Ytjn5yv5xax6Dbhj");
+        String[] serverHashes = getHashes();
         String serverHash = serverHashes[0];
         String serverHash2 = serverHashes[1];
-        logger.info("ride upload version: 10" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
-        if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))){
+        logger.info("ride upload version: " + INTERFACE_VERSION + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
+        if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))&&(!("0"+serverHash).equals(clientHash))&&(!("0"+serverHash2).equals(clientHash))){
             return Response.status(400, "not authorized").build();
         }
 
@@ -53,7 +49,7 @@ public class UploadServlet {
         String password = RandomStringUtils.randomAlphanumeric(10);
 
 
-        if(!FileListController.containsKey(hash)){
+        //if(!FileListController.containsKey(hash)){
             String directory = "SimRa" + sp + loc + sp + "Rides";
             FileListController.updateKeyValue(hash, password, absolutePath + sp + "fileList.csv");
             if(!directoryAlreadyExists(directory)){
@@ -75,10 +71,31 @@ public class UploadServlet {
                 }
             };
             return Response.ok(stream).build();
-        } else {
-            return Response.status(404, "File not found").build();
+        } /* else {
+            String errorID = RandomStringUtils.randomAlphanumeric(10) + ".txt";
+            String errorLogDirectory = "SimRa" + sp + "ErrorLogs" + sp + errorID;
+            logger.error("There was a ride post request with already existing hash as key. The log is saved under " + errorLogDirectory);
+            try {
+                Files.createDirectories(Paths.get(errorLogDirectory));
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                StringBuilder errorContent = new StringBuilder();
+                errorContent.append("loc: ").append(loc).append(System.lineSeparator())
+                        .append("clientHash: ").append(clientHash).append(System.lineSeparator())
+                        .append("serverHash: ").append(serverHash).append(System.lineSeparator())
+                        .append("serverHash2: ").append(serverHash2).append(System.lineSeparator())
+                        .append("fileContentHash: ").append(hash).append(System.lineSeparator())
+                        .append("password: ").append(password).append(System.lineSeparator())
+                        .append("fileBody: ").append(System.lineSeparator())
+                        .append(fileBody);
+
+                overWriteContentToFile(errorLogDirectory, errorContent.toString());
+            }
+
+            return Response.status(404, "File already exists").build();
         }
-    }
+    }*/
 
     @PUT
     @Path("ride")
@@ -86,11 +103,11 @@ public class UploadServlet {
     @Produces(MediaType.TEXT_PLAIN)
     public Response updateRide(@QueryParam("fileHash") String fileHash, @QueryParam("filePassword") String filePassword, @QueryParam("loc") @DefaultValue("Berlin") String loc, @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        String[] serverHashes = getHashes("Ytjn5yv5xax6Dbhj");
+        String[] serverHashes = getHashes();
         String serverHash = serverHashes[0];
         String serverHash2 = serverHashes[1];
-        logger.info("fileHash: " + fileHash + " filePassword: " + filePassword + " version: 10" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
-        if (((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash)))||(!checkKeyValue(fileHash,filePassword))){
+        logger.info("fileHash: " + fileHash + " filePassword: " + filePassword + " version: " + INTERFACE_VERSION + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
+        if (((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))&&(!("0"+serverHash).equals(clientHash))&&(!("0"+serverHash2).equals(clientHash)))||(!checkKeyValue(fileHash,filePassword))){
             return Response.status(400, "not authorized").build();
         }
 
@@ -120,18 +137,18 @@ public class UploadServlet {
     @Produces(MediaType.TEXT_PLAIN)
     public Response uploadProfile(@QueryParam("loc") @DefaultValue("de") String loc, @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        String[] serverHashes = getHashes("Ytjn5yv5xax6Dbhj");
+        String[] serverHashes = getHashes();
         String serverHash = serverHashes[0];
         String serverHash2 = serverHashes[1];
-        logger.info("profile upload version: 10" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
-        if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))){
+        logger.info("profile upload version: " + INTERFACE_VERSION + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
+        if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))&&(!("0"+serverHash).equals(clientHash))&&(!("0"+serverHash2).equals(clientHash))){
             return Response.status(400, "not authorized").build();
         }
 
         String hash = "VM2_" + (RandomStringUtils.randomAlphanumeric(30)).hashCode();
         String password = RandomStringUtils.randomAlphanumeric(10);
 
-        if(!FileListController.containsKey(hash)) {
+        // if(!FileListController.containsKey(hash)) {
             String directory = "SimRa" + sp + loc + sp + "Profiles";
             FileListController.updateKeyValue(hash, password, absolutePath + sp + "fileList.csv");
 
@@ -152,10 +169,32 @@ public class UploadServlet {
                     writer.flush();
                 }
             };
-            return Response.ok(stream).build();        } else {
-            return Response.status(404, "File not found").build();
+            return Response.ok(stream).build();
+        }/* else {
+            String errorID = RandomStringUtils.randomAlphanumeric(10) + ".txt";
+            String errorLogDirectory = "SimRa" + sp + "ErrorLogs" + sp + errorID;
+            logger.error("There was a ride post request with already existing hash as key. The log is saved under " + errorLogDirectory);
+            try {
+                Files.createDirectories(Paths.get(errorLogDirectory));
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                StringBuilder errorContent = new StringBuilder();
+                errorContent.append("loc: ").append(loc).append(System.lineSeparator())
+                        .append("clientHash: ").append(clientHash).append(System.lineSeparator())
+                        .append("serverHash: ").append(serverHash).append(System.lineSeparator())
+                        .append("serverHash2: ").append(serverHash2).append(System.lineSeparator())
+                        .append("profileContentHash: ").append(hash).append(System.lineSeparator())
+                        .append("password: ").append(password).append(System.lineSeparator())
+                        .append("content: ").append(System.lineSeparator())
+                        .append(content);
+
+                overWriteContentToFile(errorLogDirectory , errorContent.toString());
+            }
+
+            return Response.status(404, "File already exists").build();
         }
-    }
+    }*/
 
     @PUT
     @Path("profile")
@@ -163,11 +202,11 @@ public class UploadServlet {
     @Produces(MediaType.TEXT_PLAIN)
     public Response updateProfile(@QueryParam("fileHash") String fileHash, @QueryParam("filePassword") String filePassword, @QueryParam("loc") @DefaultValue("Berlin") String loc, @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        String[] serverHashes = getHashes("Ytjn5yv5xax6Dbhj");
+        String[] serverHashes = getHashes();
         String serverHash = serverHashes[0];
         String serverHash2 = serverHashes[1];
-        logger.info("fileHash: " + fileHash + " filePassword: " + filePassword + " version: 10" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
-        if (((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash)))||(!checkKeyValue(fileHash.replace("profile.csv",""),filePassword))){
+        logger.info("fileHash: " + fileHash + " filePassword: " + filePassword + " version: " + INTERFACE_VERSION + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
+        if (((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))&&(!("0"+serverHash).equals(clientHash))&&(!("0"+serverHash2).equals(clientHash)))||(!checkKeyValue(fileHash.replace("profile.csv",""),filePassword))){
             return Response.status(400, "not authorized").build();
         }
 
@@ -199,11 +238,11 @@ public class UploadServlet {
     @Produces(MediaType.TEXT_PLAIN)
     public Response uploadCrashLog(@QueryParam("loc") @DefaultValue("de") String loc, @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        String[] serverHashes = getHashes("Ytjn5yv5xax6Dbhj");
+        String[] serverHashes = getHashes();
         String serverHash = serverHashes[0];
         String serverHash2 = serverHashes[1];
-        logger.info("crash upload version: 10" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
-        if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))){
+        logger.info("crash upload version: " + INTERFACE_VERSION + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
+        if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))&&(!("0"+serverHash).equals(clientHash))&&(!("0"+serverHash2).equals(clientHash))){
             return Response.status(400, "not authorized").build();
         }
 
@@ -236,16 +275,16 @@ public class UploadServlet {
     @Produces(MediaType.TEXT_PLAIN)
     public Response updatePut(@QueryParam("fileHash") String fileHash, @QueryParam("filePassword") String filePassword, @QueryParam("loc") @DefaultValue("Berlin") String loc, @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        String[] serverHashes = getHashes("Ytjn5yv5xax6Dbhj");
+        String[] serverHashes = getHashes();
         String serverHash = serverHashes[0];
         String serverHash2 = serverHashes[1];
-        logger.info("fileHash: " + fileHash + " filePassword: " + filePassword + " version: 10" + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
-        if (((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash)))||(!checkKeyValue(fileHash.replace("profile.csv",""),filePassword))){
+        logger.info("fileHash: " + fileHash + " filePassword: " + filePassword + " version: " + INTERFACE_VERSION + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
+        if (((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))&&(!("0"+serverHash).equals(clientHash))&&(!("0"+serverHash2).equals(clientHash)))||(!checkKeyValue(fileHash.replace("profile.csv",""),filePassword))){
             return Response.status(400, "not authorized").build();
         }
 
 
-        return overWriteAndReturnStatus(fileHash, "10", loc, content);
+        return overWriteAndReturnStatus(fileHash, String.valueOf(INTERFACE_VERSION), loc, content);
 
     }
 
@@ -287,11 +326,11 @@ public class UploadServlet {
     @Consumes(MediaType.TEXT_PLAIN)
     public Response checkVersion(@QueryParam("clientHash") @DefaultValue("10") String clientHash) {
 
-        String[] serverHashes = getHashes("Ytjn5yv5xax6Dbhj");
+        String[] serverHashes = getHashes();
         String serverHash = serverHashes[0];
         String serverHash2 = serverHashes[1];
-        logger.info("version: 10" + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
-        if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))){
+        logger.info("version: " + INTERFACE_VERSION + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
+        if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))&&(!("0"+serverHash).equals(clientHash))&&(!("0"+serverHash2).equals(clientHash))){
             return Response.status(400, "not authorized").build();
         }
         java.nio.file.Path currentRelativePath = Paths.get("");
