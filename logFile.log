@@ -1,3 +1,0 @@
-03.09.2019 11:01:12.940 [main] INFO  tuberlin.mcc.simra.backend.WebServer - Setting up server at port 8082
-03.09.2019 11:01:13.112 [main] INFO  t.m.s.b.s.version10.UploadServlet - loading fileList.csv under path: C:\Repo\simra_backend\fileList.csv
-03.09.2019 11:01:14.799 [main] INFO  tuberlin.mcc.simra.backend.WebServer - Server started successfully
