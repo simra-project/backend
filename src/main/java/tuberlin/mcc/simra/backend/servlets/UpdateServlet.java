@@ -1,21 +1,13 @@
 package tuberlin.mcc.simra.backend.servlets;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tuberlin.mcc.simra.backend.control.FileListController;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 
-import static tuberlin.mcc.simra.backend.control.FileListController.updateKeyValue;
 
 @Path("updatel")
 public class UpdateServlet {

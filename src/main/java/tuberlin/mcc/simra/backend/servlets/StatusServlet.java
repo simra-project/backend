@@ -11,7 +11,6 @@ import javax.ws.rs.core.Response;
 
 @Path("status")
 public class StatusServlet {
-    private static Logger logger = LoggerFactory.getLogger(StatusServlet.class.getName());
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
