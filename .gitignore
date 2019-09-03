@@ -1,4 +1,3 @@
-
 *.properties
 *.lst
 *.class
@@ -7,3 +6,6 @@ out/*
 target/*
 .idea/*
 logFile.log
+*.jks
+simRa_security.config
+simRa_backend.config
