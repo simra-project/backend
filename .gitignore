@@ -1,5 +1,12 @@
-
-target/maven-archiver/pom.properties
-.idea/workspace.xml
-target/maven-archiver/pom.properties
+*.properties
+*.lst
 *.class
+*.jar
+out/*
+target/*
+.idea/*
+*.jks
+simRa_security.config
+*.iml
+simRa_backend.config
+logFile.log
