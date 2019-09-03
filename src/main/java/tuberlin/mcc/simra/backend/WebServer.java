@@ -13,12 +13,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.nio.file.Paths;
 import java.security.KeyStore;
-import java.util.Arrays;
 
 import static tuberlin.mcc.simra.backend.control.FileListController.loadFileCSV;
+import static tuberlin.mcc.simra.backend.control.Util.getConfigValues;
 
 
 public class WebServer {
@@ -59,13 +58,19 @@ public class WebServer {
 
 
         try {
-            String password = "PSptb123";
+            String password = null;
+
+            String[] responseArray = getConfigValues(new String[] {"keystore_password"},absolutePath+sp+"simRa_security.config" );
+            if (responseArray != null && responseArray.length > 0) {
+                password = responseArray[0];
+            }
+
             KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-            keystore.load(new FileInputStream(absolutePath+sp+"keystore.jks"), password.toCharArray());
+            keystore.load(new FileInputStream(absolutePath+sp+"certificate.jks"), password.toCharArray());
 
             SslContextFactory cf = new SslContextFactory();
             cf.setKeyStore(keystore);
-            cf.setKeyStorePassword("PSptb123");
+            cf.setKeyStorePassword(password);
 
             HttpConfiguration config = new HttpConfiguration();
             config.addCustomizer(new SecureRequestCustomizer());
