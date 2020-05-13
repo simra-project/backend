@@ -14,4 +14,6 @@ For more information see [our website](https://www.digital-future.berlin/en/rese
 
 ## Development
 
-Run `docker run -it --rm --name my-maven-project -v "C:\Develop\DSP-2020\simra-backend:/usr/src/app" -w /usr/src/app maven:3.6-openjdk-15 mvn clean package` locally for a build.
+Build: `docker run -it --rm --name my-maven-project -v "C:\Develop\DSP-2020\simra-backend:/usr/src/app" -w /usr/src/app maven:3.6-openjdk-15 mvn clean package` locally for a build.
+
+Run `docker run -it --rm --name my-maven-project -v "C:\Develop\DSP-2020\simra-backend:/usr/src/app" -w /usr/src/app maven:3.6-openjdk-15 bash` for a local development environment.
