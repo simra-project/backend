@@ -13,7 +13,7 @@ steps:
 - task: Docker@2
   inputs:
     containerRegistry: 'DockerHub (danielhabenicht)'
-    repository: 'dsp-2020-simra-backend'
+    repository: 'danielhabenicht/dsp-2020-simra-backend'
     command: 'buildAndPush'
     Dockerfile: './Dockerfile'
     tags: |
