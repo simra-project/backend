@@ -17,3 +17,11 @@ For more information see [our website](https://www.digital-future.berlin/en/rese
 Build: `docker run -it --rm --name my-maven-project -v "C:\Develop\DSP-2020\simra-backend:/usr/src/app" -w /usr/src/app maven:3.6-openjdk-15 mvn clean package` locally for a build.
 
 Run `docker run -it --rm --name my-maven-project -v "C:\Develop\DSP-2020\simra-backend:/usr/src/app" -w /usr/src/app maven:3.6-openjdk-15 bash` for a local development environment.
+
+## Usage
+
+In order to make it harder abuse the public API we are using a token which is shared with the app. It should be added to each request, e.g. `https://example.com/10/ride?clientHash=<CLIENTHASH>`. The `CLIENTHASH` is configured in the [`simRa_security.config`](./simRa_security.config.example).
+
+## Deployment
+
+After building, just execute `java -jar app.jar`. Make sure to provide the `simRa_security.config` in the same folder as the `app.jar`.
