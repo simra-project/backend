@@ -1,0 +1,21 @@
+# Maven
+# Build your Java project and run tests with Apache Maven.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+
+trigger:
+  - master
+
+pool:
+  vmImage: "ubuntu-latest"
+
+steps:
+- task: Docker@2
+  inputs:
+    containerRegistry: 'DockerHub (danielhabenicht)'
+    repository: 'danielhabenicht/dsp-2020-simra-backend'
+    command: 'buildAndPush'
+    Dockerfile: './Dockerfile'
+    tags: |
+      $(Build.BuildId)
+      latest

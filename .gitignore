@@ -10,3 +10,4 @@ simRa_security.config
 simRa_backend.config
 *.iml
 logFile.log
+fileList.csv
