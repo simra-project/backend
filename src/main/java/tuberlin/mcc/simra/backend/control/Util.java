@@ -71,4 +71,19 @@ public class Util {
 
         return result;
     }
+
+    public static String getRegions (String pathToRegions) {
+        File regionsFile = new File(pathToRegions);
+        StringBuilder result = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(regionsFile)))) {
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                result.append(line).append(System.lineSeparator());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result.toString();
+    }
 }
