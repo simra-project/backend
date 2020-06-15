@@ -35,8 +35,8 @@ public class WebServer {
 
         server = new Server(port);
 
-        java.nio.file.Path currentRelativePath = Paths.get("");
-        String absolutePath = currentRelativePath.toAbsolutePath().toString();
+        String absolutePath = System.getProperty("user.dir");
+        logger.info("Current Path " + absolutePath);
         String sp = File.separator;
 
         // reading fileList.csv
