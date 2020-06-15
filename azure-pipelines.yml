@@ -24,9 +24,10 @@ steps:
   inputs:
     script: |
       mvn package
+      cp ./out/backend-3-jar-with-dependencies.jar $(Build.ArtifactStagingDirectory)/app.jar
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: './out/backend-3-jar-with-dependencies.jar'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'

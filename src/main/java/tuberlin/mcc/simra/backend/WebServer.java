@@ -35,7 +35,9 @@ public class WebServer {
 
         server = new Server(port);
 
-        String absolutePath = System.getProperty("user.dir");
+        //String absolutePath = System.getProperty("user.dir");
+        // TODO: Find a better way
+        String absolutePath = "/home/site/wwwroot";
         logger.info("Current Path " + absolutePath);
         String sp = File.separator;
 
