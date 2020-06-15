@@ -11,8 +11,7 @@ public class SimRauthenticator {
 
     public static String[] getHashes() {
         String prefix = null;
-        java.nio.file.Path currentRelativePath = Paths.get("");
-        String absolutePath = currentRelativePath.toAbsolutePath().toString();
+        String absolutePath = System.getProperty("user.dir");
         String sp = File.separator;
 
         String[] responseArray = getConfigValues(new String[] {"hash_prefix"},absolutePath+sp+"simRa_security.config" );
