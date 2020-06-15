@@ -13,6 +13,8 @@ import java.nio.file.Paths;
 import static tuberlin.mcc.simra.backend.control.SimRauthenticator.getHashes;
 import static tuberlin.mcc.simra.backend.control.Util.getConfigValues;
 import static tuberlin.mcc.simra.backend.control.Util.getRegions;
+import static tuberlin.mcc.simra.backend.control.Util.getBaseFolderPath;
+
 
 @SuppressWarnings("Duplicates")
 @Path("check")
@@ -20,8 +22,6 @@ public class CheckServlet {
 
     private static Logger logger = LoggerFactory.getLogger(CheckServlet.class.getName());
     private static String sp = File.separator;
-    private static java.nio.file.Path currentRelativePath = Paths.get("");
-    private static String absolutePath = currentRelativePath.toAbsolutePath().toString();
     private static int INTERFACE_VERSION = 10;
     @GET
     @Path("regions")
@@ -36,11 +36,9 @@ public class CheckServlet {
         if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))&&(!("0"+serverHash).equals(clientHash))&&(!("0"+serverHash2).equals(clientHash))){
             return Response.status(400, "not authorized").build();
         }
-        java.nio.file.Path currentRelativePath = Paths.get("");
-        String absolutePath = currentRelativePath.toAbsolutePath().toString();
         String sp = File.separator;
 
-        String regions = getRegions(absolutePath+sp+"simRa_regions.config" );
+        String regions = getRegions(getBaseFolderPath()+sp+"simRa_regions.config" );
         if (regions.length() > 2) {
             StreamingOutput stream = new StreamingOutput() {
                 @Override
@@ -69,11 +67,9 @@ public class CheckServlet {
         if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))&&(!("0"+serverHash).equals(clientHash))&&(!("0"+serverHash2).equals(clientHash))){
             return Response.status(400, "not authorized").build();
         }
-        java.nio.file.Path currentRelativePath = Paths.get("");
-        String absolutePath = currentRelativePath.toAbsolutePath().toString();
         String sp = File.separator;
 
-        String[] responseArray = getConfigValues(new String[] {"critical","newestAppVersion","urlToNewestAPK"},absolutePath+sp+"simRa_backend.config" );
+        String[] responseArray = getConfigValues(new String[] {"critical","newestAppVersion","urlToNewestAPK"},getBaseFolderPath()+sp+"simRa_backend.config" );
         if (responseArray != null && responseArray.length > 2) {
             StreamingOutput stream = new StreamingOutput() {
                 @Override

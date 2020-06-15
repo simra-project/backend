@@ -17,6 +17,8 @@ import static java.lang.System.currentTimeMillis;
 import static tuberlin.mcc.simra.backend.control.FileListController.checkKeyValue;
 import static tuberlin.mcc.simra.backend.control.SimRauthenticator.getHashes;
 import static tuberlin.mcc.simra.backend.control.Util.*;
+import static tuberlin.mcc.simra.backend.control.Util.getBaseFolderPath;
+
 
 @SuppressWarnings("Duplicates")
 @Path("10")
@@ -24,8 +26,6 @@ public class UploadServlet {
 
     private static Logger logger = LoggerFactory.getLogger(UploadServlet.class.getName());
     private static String sp = File.separator;
-    private static java.nio.file.Path currentRelativePath = Paths.get("");
-    private static String absolutePath = currentRelativePath.toAbsolutePath().toString();
     private static int INTERFACE_VERSION = 10;
 
 
@@ -51,7 +51,7 @@ public class UploadServlet {
 
         //if(!FileListController.containsKey(hash)){
             String directory = "SimRa" + sp + loc + sp + "Rides";
-            FileListController.updateKeyValue(hash, password, absolutePath + sp + "fileList.csv");
+            FileListController.updateKeyValue(hash, password, getBaseFolderPath() + sp + "fileList.csv");
             if(!directoryAlreadyExists(directory)){
                 try {
                     Files.createDirectories(Paths.get(directory));
@@ -60,7 +60,7 @@ public class UploadServlet {
                 }
             }
 
-            overWriteContentToFile(absolutePath + sp + directory + sp + hash, content);
+            overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + hash, content);
 
             StreamingOutput stream = new StreamingOutput() {
                 @Override
@@ -121,8 +121,8 @@ public class UploadServlet {
             }
         }
 
-        logger.info("writing to filePath: " + absolutePath + sp + directory + sp + fileHash);
-        boolean success = overWriteContentToFile(absolutePath + sp + directory + sp + fileHash, content);
+        logger.info("writing to filePath: " + getBaseFolderPath() + sp + directory + sp + fileHash);
+        boolean success = overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + fileHash, content);
         if (success) {
             return Response.status(200, "OK").build();
         } else {
@@ -150,7 +150,7 @@ public class UploadServlet {
 
         // if(!FileListController.containsKey(hash)) {
             String directory = "SimRa" + sp + loc + sp + "Profiles";
-            FileListController.updateKeyValue(hash, password, absolutePath + sp + "fileList.csv");
+            FileListController.updateKeyValue(hash, password, getBaseFolderPath() + sp + "fileList.csv");
 
             if(!directoryAlreadyExists(directory)){
                 try {
@@ -159,7 +159,7 @@ public class UploadServlet {
                     e.printStackTrace();
                 }
             }
-            overWriteContentToFile(absolutePath + sp + directory + sp + hash, content);
+            overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + hash, content);
 
             StreamingOutput stream = new StreamingOutput() {
                 @Override
@@ -222,8 +222,8 @@ public class UploadServlet {
             }
         }
 
-        logger.info("writing to filePath: " + absolutePath + sp + directory + sp + fileHash);
-        boolean success = overWriteContentToFile(absolutePath + sp + directory + sp + fileHash, content);
+        logger.info("writing to filePath: " + getBaseFolderPath() + sp + directory + sp + fileHash);
+        boolean success = overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + fileHash, content);
 
         if (success) {
             return Response.status(200, "OK").build();
@@ -261,7 +261,7 @@ public class UploadServlet {
                 e.printStackTrace();
             }
         }
-        boolean success = overWriteContentToFile(absolutePath + sp + directory + sp + ts, content);
+        boolean success = overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + ts, content);
         if (success) {
             return Response.status(200, "OK").build();
         } else {
@@ -292,9 +292,6 @@ public class UploadServlet {
     private Response overWriteAndReturnStatus(String fileHash, String version, String loc, String content){
         String sp = File.separator;
 
-        java.nio.file.Path currentRelativePath = Paths.get("");
-        String absolutePath = currentRelativePath.toAbsolutePath().toString();
-
         String directory;
 
         if (fileHash.contains("profile.csv")) {
@@ -311,8 +308,8 @@ public class UploadServlet {
             }
         }
 
-        logger.info("writing to filePath: " + absolutePath + sp + directory + sp + fileHash);
-        boolean success = overWriteContentToFile(absolutePath + sp + directory + sp + fileHash, content);
+        logger.info("writing to filePath: " + getBaseFolderPath() + sp + directory + sp + fileHash);
+        boolean success = overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + fileHash, content);
         if (success) {
             return Response.status(200, "OK").build();
         } else {
@@ -333,11 +330,9 @@ public class UploadServlet {
         if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))&&(!("0"+serverHash).equals(clientHash))&&(!("0"+serverHash2).equals(clientHash))){
             return Response.status(400, "not authorized").build();
         }
-        java.nio.file.Path currentRelativePath = Paths.get("");
-        String absolutePath = currentRelativePath.toAbsolutePath().toString();
         String sp = File.separator;
 
-        String[] responseArray = getConfigValues(new String[] {"critical","newestAppVersion","urlToNewestAPK"},absolutePath+sp+"simRa_backend.config" );
+        String[] responseArray = getConfigValues(new String[] {"critical","newestAppVersion","urlToNewestAPK"},getBaseFolderPath()+sp+"simRa_backend.config" );
         if (responseArray != null && responseArray.length > 2) {
             StreamingOutput stream = new StreamingOutput() {
                 @Override

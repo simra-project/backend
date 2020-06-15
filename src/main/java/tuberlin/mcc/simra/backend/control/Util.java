@@ -11,14 +11,16 @@ public class Util {
 
     private static Logger logger = LoggerFactory.getLogger(UploadServlet.class.getName());
 
+    public static String getBaseFolderPath() {
+        return System.getProperty("user.dir");
+    }
+
 
     public static Boolean directoryAlreadyExists(String path){
 
         // Boolean alreadyExists = false;
 
-        java.nio.file.Path currentRelativePath = Paths.get("");
-        String absolutePath = currentRelativePath.toAbsolutePath().toString();
-        File file = new File(absolutePath);
+        File file = new File(getBaseFolderPath());
         String[] fileNames = file.list();
         for (int i = 0; i < fileNames.length; i++) {
             // logger.debug("fileNames[i]: " + fileNames[i]);

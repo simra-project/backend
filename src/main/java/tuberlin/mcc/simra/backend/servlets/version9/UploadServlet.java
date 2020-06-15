@@ -53,15 +53,12 @@ public class UploadServlet {
         }
         String password = RandomStringUtils.randomAlphanumeric(10);
 
-        java.nio.file.Path currentRelativePath = Paths.get("");
-        String absolutePath = currentRelativePath.toAbsolutePath().toString();
-
         if(!FileListController.containsKey(hash)){
 
             String directory;
             if (fileName.equals("profile.csv")) {
                 directory = version + sp + loc + sp + "Profiles";
-                FileListController.updateKeyValue(hash, password, absolutePath + sp + "fileList.csv");
+                FileListController.updateKeyValue(hash, password, getBaseFolderPath() + sp + "fileList.csv");
             } else if (fileName.startsWith("CRASH")) {
                 String ts = "101";
                 try {
@@ -72,7 +69,7 @@ public class UploadServlet {
                 directory = version + sp + loc + sp + "CRASH" + sp + ts;
             } else {
                 directory = version + sp + loc + sp + "Rides";
-                FileListController.updateKeyValue(hash, password, absolutePath + sp + "fileList.csv");
+                FileListController.updateKeyValue(hash, password, getBaseFolderPath() + sp + "fileList.csv");
             }
             if(!directoryAlreadyExists(directory)){
                 try {
@@ -84,9 +81,9 @@ public class UploadServlet {
             if (fileName.startsWith("CRASH")) {
                 String[] fileNameLineArray = fileName.split("_");
                 fileName = Arrays.toString(Arrays.copyOfRange(fileNameLineArray,2,(fileNameLineArray.length))).replace("[","").replace(",","").replace("]","");
-                overWriteContentToFile(absolutePath + sp + directory + sp + fileName, content);
+                overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + fileName, content);
             } else {
-                overWriteContentToFile(absolutePath + sp + directory + sp + hash, content);
+                overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + hash, content);
             }
 
             return Response.status(200, hash + "," + password).build();
@@ -117,9 +114,6 @@ public class UploadServlet {
     private Response overWriteAndReturnStatus(String fileHash, String version, String loc, String content){
         String sp = File.separator;
 
-        java.nio.file.Path currentRelativePath = Paths.get("");
-        String absolutePath = currentRelativePath.toAbsolutePath().toString();
-
         String directory;
 
         if (fileHash.contains("profile.csv")) {
@@ -136,8 +130,8 @@ public class UploadServlet {
             }
         }
 
-        logger.info("writing to filePath: " + absolutePath + sp + directory + sp + fileHash);
-        overWriteContentToFile(absolutePath + sp + directory + sp + fileHash, content);
+        logger.info("writing to filePath: " + getBaseFolderPath() + sp + directory + sp + fileHash);
+        overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + fileHash, content);
 
         return Response.status(200, "OK").build();
     }
@@ -153,11 +147,9 @@ public class UploadServlet {
         if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))){
             return Response.status(400, "not authorized").build();
         }
-        java.nio.file.Path currentRelativePath = Paths.get("");
-        String absolutePath = currentRelativePath.toAbsolutePath().toString();
         String sp = File.separator;
 
-        String[] responseArray = getConfigValues(new String[] {"critical","newestAppVersion","urlToNewestAPK"},absolutePath+sp+"simRa_backend.config" );
+        String[] responseArray = getConfigValues(new String[] {"critical","newestAppVersion","urlToNewestAPK"},getBaseFolderPath()+sp+"simRa_backend.config" );
         if (responseArray != null && responseArray.length > 2) {
             return Response.status(200,responseArray[0] + "splitter" + responseArray[1] + "splitter" + responseArray[2]).build();
         } else {

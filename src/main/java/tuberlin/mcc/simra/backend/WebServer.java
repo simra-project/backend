@@ -18,6 +18,8 @@ import java.security.KeyStore;
 
 import static tuberlin.mcc.simra.backend.control.FileListController.loadFileCSV;
 import static tuberlin.mcc.simra.backend.control.Util.getConfigValues;
+import static tuberlin.mcc.simra.backend.control.Util.getBaseFolderPath;
+
 
 
 public class WebServer {
@@ -35,12 +37,11 @@ public class WebServer {
 
         server = new Server(port);
 
-        String absolutePath = System.getProperty("user.dir");
-        logger.info("Current Path " + absolutePath);
+        logger.info("Current Path " + getBaseFolderPath());
         String sp = File.separator;
 
         // reading fileList.csv
-        loadFileCSV(absolutePath+sp+"fileList.csv");
+        loadFileCSV(getBaseFolderPath()+sp+"fileList.csv");
 
 
         // servlet handlers
@@ -60,13 +61,13 @@ public class WebServer {
         try {
             String password = null;
 
-            String[] responseArray = getConfigValues(new String[] {"keystore_password"},absolutePath+sp+"simRa_security.config" );
+            String[] responseArray = getConfigValues(new String[] {"keystore_password"},getBaseFolderPath()+sp+"simRa_security.config" );
             if (responseArray != null && responseArray.length > 0) {
                 password = responseArray[0];
             }
 
             KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-            keystore.load(new FileInputStream(absolutePath+sp+"certificate.jks"), password.toCharArray());
+            keystore.load(new FileInputStream(getBaseFolderPath()+sp+"certificate.jks"), password.toCharArray());
 
             SslContextFactory cf = new SslContextFactory();
             cf.setKeyStore(keystore);

@@ -6,15 +6,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static tuberlin.mcc.simra.backend.control.Util.getConfigValues;
+import static tuberlin.mcc.simra.backend.control.Util.getBaseFolderPath;
 
 public class SimRauthenticator {
 
     public static String[] getHashes() {
         String prefix = null;
-        String absolutePath = System.getProperty("user.dir");
         String sp = File.separator;
 
-        String[] responseArray = getConfigValues(new String[] {"hash_prefix"},absolutePath+sp+"simRa_security.config" );
+        String[] responseArray = getConfigValues(new String[] {"hash_prefix"},getBaseFolderPath()+sp+"simRa_security.config" );
         if (responseArray != null && responseArray.length > 0) {
             prefix = responseArray[0];
         }
