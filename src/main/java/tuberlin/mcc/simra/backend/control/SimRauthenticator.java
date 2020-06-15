@@ -19,22 +19,10 @@ public class SimRauthenticator {
         if (responseArray != null && responseArray.length > 0) {
             prefix = responseArray[0];
         }
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-        Date dateToday = new Date();
 
-        String oauth = sdf.format(dateToday);
+        String serverHash = prefix;
 
-        oauth += prefix;
-
-        Date dateTomorrow = new Date(dateToday.getTime()+(1000*24*60*60));
-        String oauth2 = sdf.format(dateTomorrow);
-        oauth2 += prefix;
-
-        int hash = oauth.hashCode();
-        String serverHash = Integer.toHexString(hash);
-
-        int hash2 = oauth2.hashCode();
-        String serverHash2 = Integer.toHexString(hash2);
+        String serverHash2 = prefix;
 
         return new String[] {serverHash,serverHash2};
     }
