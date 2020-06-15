@@ -19,3 +19,14 @@ steps:
     tags: |
       $(Build.BuildId)
       latest
+
+- task: CmdLine@2
+  inputs:
+    script: |
+      mvn package
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: './out/backend-3-jar-with-dependencies.jar'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
