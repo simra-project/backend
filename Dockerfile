@@ -7,6 +7,11 @@ COPY src/ /build/src/
 RUN mvn package
 
 FROM openjdk:15-alpine
+
+RUN apk add openssh \
+    && echo "root:Docker!" | chpasswd 
+COPY sshd_config /etc/ssh/
+
 ENV API_SECRET="mysecret"
 COPY --from=build /build/out/backend-3-jar-with-dependencies.jar ./app.jar
 
@@ -15,4 +20,4 @@ RUN sed -i 's/\r$//' ./start.sh  && chmod +x ./start.sh
 
 CMD ["sh", "./start.sh"]
 
-
+EXPOSE 8082 2222
