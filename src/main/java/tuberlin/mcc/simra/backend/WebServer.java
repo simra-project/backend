@@ -30,7 +30,7 @@ public class WebServer {
     private final Server server;
 
     public WebServer() {
-        int port = 8082;
+        int port = 80;
         logger.info("Setting up server at port " + port);
 
         server = new Server(port);
@@ -75,14 +75,14 @@ public class WebServer {
             HttpConfiguration config = new HttpConfiguration();
             config.addCustomizer(new SecureRequestCustomizer());
             config.setSecureScheme("https");
-            config.setSecurePort(8082);
+            config.setSecurePort(port);
 
             HttpConfiguration sslConfiguration = new HttpConfiguration(config);
             sslConfiguration.addCustomizer(new SecureRequestCustomizer());
             ServerConnector sslConnector = new ServerConnector(server,
                     new SslConnectionFactory(cf, HttpVersion.HTTP_1_1.toString()),
                     new HttpConnectionFactory(sslConfiguration));
-            sslConnector.setPort(8082);
+            sslConnector.setPort(port);
             sslConnector.setName("secured_simRa");
             server.setConnectors(new Connector[]{sslConnector});
             // System.out.println(Arrays.deepToString(server.getConnectors()));
