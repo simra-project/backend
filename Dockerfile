@@ -13,7 +13,7 @@ RUN apk add openssh \
 COPY sshd_config /etc/ssh/
 
 ENV API_SECRET="mysecret"
-COPY --from=build /build/out/backend-3-jar-with-dependencies.jar ./app.jar
+COPY --from=build /build/out/app.jar ./app.jar
 
 COPY ./start.sh ./start.sh
 RUN sed -i 's/\r$//' ./start.sh  && chmod +x ./start.sh
