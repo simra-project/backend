@@ -28,7 +28,6 @@ public class Util {
             out.println(content);
             out.close();
         } catch (IOException e) {
-            out.println(e.getMessage());
             logger.error(e.getMessage(),e);
         }
     }
@@ -38,7 +37,6 @@ public class Util {
             fos.write(content);
             return true;
         } catch (IOException e) {
-            out.println(e.getMessage());
             logger.error(e.getMessage(),e);
             return false;
         }
