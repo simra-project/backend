@@ -32,7 +32,7 @@ public class WebServer {
     private final Server server;
 
     public WebServer() {
-        int port = 80;
+        int port = 8080;
         logger.info("Setting up server at port " + port);
 
         server = new Server(port);

@@ -20,4 +20,4 @@ RUN sed -i 's/\r$//' ./start.sh  && chmod +x ./start.sh
 
 CMD ["sh", "./start.sh"]
 
-EXPOSE 8082 2222
+EXPOSE 8080 2222
