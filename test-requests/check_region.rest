@@ -1,0 +1,4 @@
+GET http://51.116.189.26/check/regions?clientHash=mysecret HTTP/1.1
+
+
+
