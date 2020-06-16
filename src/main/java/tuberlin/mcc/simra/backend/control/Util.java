@@ -6,6 +6,7 @@ import tuberlin.mcc.simra.backend.servlets.version10.UploadServlet;
 
 import java.io.*;
 import java.nio.file.Paths;
+import java.nio.file.Files;
 
 public class Util {
 
@@ -18,17 +19,7 @@ public class Util {
 
     public static Boolean directoryAlreadyExists(String path){
 
-        // Boolean alreadyExists = false;
-
-        File file = new File(getBaseFolderPath());
-        String[] fileNames = file.list();
-        for (int i = 0; i < fileNames.length; i++) {
-            // logger.debug("fileNames[i]: " + fileNames[i]);
-            if(path.equals(fileNames[i])){
-                return true;
-            }
-        }
-        return false;
+        return Files.exists(Paths.get(path));
     }
 
     public static void appendTextToFile (String filepath, String content) {

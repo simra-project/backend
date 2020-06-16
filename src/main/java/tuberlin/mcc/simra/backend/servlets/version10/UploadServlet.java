@@ -52,7 +52,7 @@ public class UploadServlet {
 
 
         //if(!FileListController.containsKey(hash)){
-            String directory = "SimRa" + sp + loc + sp + "Rides";
+            String directory = getBaseFolderPath() + sp + "SimRa" + sp + loc + sp + "Rides";
             FileListController.updateKeyValue(hash, password, getBaseFolderPath() + sp + "fileList.csv");
             if(!directoryAlreadyExists(directory)){
                 try {
@@ -62,7 +62,7 @@ public class UploadServlet {
                 }
             }
 
-            overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + hash, content);
+            overWriteContentToFile(directory + sp + hash, content);
 
             StreamingOutput stream = new StreamingOutput() {
                 @Override
@@ -73,7 +73,8 @@ public class UploadServlet {
                 }
             };
             return Response.ok(stream).build();
-        } /* else {
+        } 
+        /* else {
             String errorID = RandomStringUtils.randomAlphanumeric(10) + ".txt";
             String errorLogDirectory = "SimRa" + sp + "ErrorLogs" + sp + errorID;
             logger.error("There was a ride post request with already existing hash as key. The log is saved under " + errorLogDirectory);
