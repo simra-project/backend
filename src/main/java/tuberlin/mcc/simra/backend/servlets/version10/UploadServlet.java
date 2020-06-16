@@ -43,6 +43,8 @@ public class UploadServlet {
             return Response.status(400, "not authorized").build();
         }
 
+        logger.info(content);
+
         String fileBody = content.substring(content.indexOf(System.lineSeparator())+1);
         String hash = "VM2_" + fileBody.hashCode();
 
@@ -144,6 +146,8 @@ public class UploadServlet {
         if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))&&(!("0"+serverHash).equals(clientHash))&&(!("0"+serverHash2).equals(clientHash))){
             return Response.status(400, "not authorized").build();
         }
+
+        logger.info(content);
 
         String hash = "VM2_" + (RandomStringUtils.randomAlphanumeric(30)).hashCode();
         String password = RandomStringUtils.randomAlphanumeric(10);
@@ -283,6 +287,8 @@ public class UploadServlet {
             return Response.status(400, "not authorized").build();
         }
 
+        logger.info(content);
+
 
         return overWriteAndReturnStatus(fileHash, String.valueOf(INTERFACE_VERSION), loc, content);
 
@@ -302,7 +308,7 @@ public class UploadServlet {
         }
         if(!directoryAlreadyExists(directory)){
             try {
-                Files.createDirectories(Paths.get(directory));
+                Files.createDirectories(Paths.get(getBaseFolderPath() + directory));
             } catch (IOException e) {
                 e.printStackTrace();
             }
