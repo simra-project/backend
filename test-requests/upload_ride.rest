@@ -1,4 +1,4 @@
-POST http://51.116.189.26/10/ride?loc=UNKNOWN&clientHash=mysecret HTTP/1.1
+POST http://localhost/10/ride?loc=UNKNOWN&clientHash=mysecret HTTP/1.1
 content-type: text/plain
 
 58#1
