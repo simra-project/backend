@@ -25,3 +25,13 @@ In order to make it harder abuse the public API we are using a token which is sh
 ## Deployment
 
 After building, just execute `java -jar app.jar`. Make sure to provide the `simRa_security.config` in the same folder as the `app.jar`.
+
+## Installation 
+
+Prerequisites: 
+ - Ubuntu 18.04.4 LTS
+ - Port 80 and 443 accessible
+
+1. Run `sudo apt-get install default-jdk`
+2. [Follow this guide for SSL certificates](https://medium.com/@mightywomble/how-to-set-up-nginx-reverse-proxy-with-lets-encrypt-8ef3fd6b79e5)
+3. [Create service to execute](https://dzone.com/articles/run-your-java-application-as-a-service-on-ubuntu) `java -jar app.jar` 
