@@ -59,6 +59,7 @@ public class UploadServlet {
                     Files.createDirectories(Paths.get(directory));
                 } catch (IOException e) {
                     e.printStackTrace();
+                    out.println(e.getMessage());
                 }
             }
 
