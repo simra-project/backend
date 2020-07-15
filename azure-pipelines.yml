@@ -10,15 +10,26 @@ pool:
   vmImage: "ubuntu-latest"
 
 steps:
-- task: Docker@2
+# - task: Docker@2
+#   inputs:
+#     containerRegistry: 'DockerHub (danielhabenicht)'
+#     repository: 'danielhabenicht/dsp-2020-simra-backend'
+#     command: 'buildAndPush'
+#     Dockerfile: './Dockerfile'
+#     tags: |
+#       $(Build.BuildId)
+#       latest
+
+- task: DownloadBuildArtifacts@0
   inputs:
-    containerRegistry: 'DockerHub (danielhabenicht)'
-    repository: 'danielhabenicht/dsp-2020-simra-backend'
-    command: 'buildAndPush'
-    Dockerfile: './Dockerfile'
-    tags: |
-      $(Build.BuildId)
-      latest
+    buildType: 'specific'
+    project: '972b0950-3130-4d92-90d8-c732e42cc887'
+    pipeline: '5'
+    specificBuildWithTriggering: true
+    buildVersionToDownload: 'latest'
+    downloadType: 'single'
+    artifactName: 'drop'
+    downloadPath: 'lib'
 
 - task: CmdLine@2
   inputs:
