@@ -34,7 +34,7 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
-      mvn package
+      mvn install
       cp ./out/app.jar $(Build.ArtifactStagingDirectory)/app.jar
 
 - task: PublishBuildArtifacts@1
