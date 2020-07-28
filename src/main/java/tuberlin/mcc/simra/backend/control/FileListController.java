@@ -18,16 +18,6 @@ public class FileListController {
     public static void updateKeyValue (String key, String value, String filePath) {
         fileMap.put(key, value);
         appendTextToFile(filePath, key + "," + value);
-        /*
-        try(BufferedWriter fos = new BufferedWriter(new FileWriter(filePath))) {
-            fileMap.forEach((k, v) -> {
-                try { fos.write(k + "," + v + System.lineSeparator()); }
-                catch (IOException ex) { throw new UncheckedIOException(ex); }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
     }
 
     public static Boolean checkKeyValue(String key, String value) {

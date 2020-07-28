@@ -1,4 +1,3 @@
-GET http://localhost/check/regions?clientHash=mysecret HTTP/1.1
-
+GET http://localhost:8080/check/regions?clientHash=mysecret HTTP/1.1
 
 

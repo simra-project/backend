@@ -10,35 +10,44 @@ pool:
   vmImage: "ubuntu-latest"
 
 steps:
-# - task: Docker@2
-#   inputs:
-#     containerRegistry: 'DockerHub (danielhabenicht)'
-#     repository: 'danielhabenicht/dsp-2020-simra-backend'
-#     command: 'buildAndPush'
-#     Dockerfile: './Dockerfile'
-#     tags: |
-#       $(Build.BuildId)
-#       latest
+  # - task: Docker@2
+  #   inputs:
+  #     containerRegistry: 'DockerHub (danielhabenicht)'
+  #     repository: 'danielhabenicht/dsp-2020-simra-backend'
+  #     command: 'buildAndPush'
+  #     Dockerfile: './Dockerfile'
+  #     tags: |
+  #       $(Build.BuildId)
+  #       latest
 
-- task: DownloadBuildArtifacts@0
-  inputs:
-    buildType: 'specific'
-    project: '972b0950-3130-4d92-90d8-c732e42cc887'
-    pipeline: '5'
-    specificBuildWithTriggering: true
-    buildVersionToDownload: 'latest'
-    downloadType: 'single'
-    artifactName: 'drop'
-    downloadPath: 'lib'
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      buildType: "specific"
+      project: "972b0950-3130-4d92-90d8-c732e42cc887"
+      pipeline: "5"
+      specificBuildWithTriggering: true
+      buildVersionToDownload: "latest"
+      downloadType: "single"
+      artifactName: "drop"
+      downloadPath: " $(System.ArtifactsDirectory)"
 
-- task: CmdLine@2
-  inputs:
-    script: |
-      mvn install
-      cp ./out/app.jar $(Build.ArtifactStagingDirectory)/app.jar
+  - task: CmdLine@2
+    inputs:
+      script: |
+        cp $(System.ArtifactsDirectory)/drop/classifier.jar ./lib/classifier.jar
+        cp $(System.ArtifactsDirectory)/drop/preprocessing_android.jar ./lib/SimRa_Preprocessing.jar
+        rm -r $(System.ArtifactsDirectory)/drop
+        ls ./lib/
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+  - task: CmdLine@2
+    inputs:
+      script: |
+        mvn initialize
+        mvn install
+        cp ./out/app.jar $(Build.ArtifactStagingDirectory)/app.jar
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+      ArtifactName: "drop"
+      publishLocation: "Container"

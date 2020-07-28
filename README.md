@@ -14,6 +14,13 @@ For more information see [our website](https://www.digital-future.berlin/en/rese
 
 ## Development
 
+Install `SimRaNN_Classifier.jar` into the `lib` folder.
+`mvn install:install-file -Dfile=./lib/SimRaNN_Classifier.jar -DgroupId=org.asanchezf -DartifactId=SimRaNN_Classifier -Dversion=1.0-SNAPSHOT`
+
+Install `SimRaNN_Preprocessing.jar` into the `lib` folder.
+`mvn install:install-file -Dfile=./lib/SimRa_Preprocessing.jar -DgroupId=de.preprocessing -DartifactId=SimRa_Preprocessing -Dversion=1.0-SNAPSHOT`
+
+
 Build: `docker run -it --rm --name my-maven-project -v "C:\Develop\DSP-2020\simra-backend:/usr/src/app" -w /usr/src/app maven:3.6-openjdk-15 mvn clean package` locally for a build.
 
 Run `docker run -it --rm --name my-maven-project -v "C:\Develop\DSP-2020\simra-backend:/usr/src/app" -w /usr/src/app maven:3.6-openjdk-15 bash` for a local development environment.
@@ -26,12 +33,13 @@ In order to make it harder abuse the public API we are using a token which is sh
 
 After building, just execute `java -jar app.jar`. Make sure to provide the `simRa_security.config` in the same folder as the `app.jar`.
 
-## Installation 
+## Installation
 
-Prerequisites: 
- - Ubuntu 18.04.4 LTS
- - Port 80 and 443 accessible
+Prerequisites:
+
+- Ubuntu 18.04.4 LTS
+- Port 80 and 443 accessible
 
 1. Run `sudo apt-get install default-jdk`
 2. [Follow this guide for SSL certificates](https://medium.com/@mightywomble/how-to-set-up-nginx-reverse-proxy-with-lets-encrypt-8ef3fd6b79e5)
-3. [Create service to execute](https://dzone.com/articles/run-your-java-application-as-a-service-on-ubuntu) `java -jar app.jar` 
+3. [Create service to execute](https://dzone.com/articles/run-your-java-application-as-a-service-on-ubuntu) `java -jar app.jar`

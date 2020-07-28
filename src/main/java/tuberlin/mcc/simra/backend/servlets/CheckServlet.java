@@ -14,7 +14,7 @@ import static tuberlin.mcc.simra.backend.control.SimRauthenticator.getHashes;
 import static tuberlin.mcc.simra.backend.control.Util.getConfigValues;
 import static tuberlin.mcc.simra.backend.control.Util.getRegions;
 import static tuberlin.mcc.simra.backend.control.Util.getBaseFolderPath;
-
+import org.asanchezf.SimRaNN_Test.Classifier;
 
 @SuppressWarnings("Duplicates")
 @Path("check")
@@ -23,6 +23,7 @@ public class CheckServlet {
     private static Logger logger = LoggerFactory.getLogger(CheckServlet.class.getName());
     private static String sp = File.separator;
     private static int INTERFACE_VERSION = 10;
+
     @GET
     @Path("regions")
     @Produces(MediaType.TEXT_PLAIN)
@@ -32,13 +33,15 @@ public class CheckServlet {
         String[] serverHashes = getHashes();
         String serverHash = serverHashes[0];
         String serverHash2 = serverHashes[1];
-        logger.info("regions: " + INTERFACE_VERSION + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
-        if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))&&(!("0"+serverHash).equals(clientHash))&&(!("0"+serverHash2).equals(clientHash))){
+        logger.info("regions: " + INTERFACE_VERSION + " clientHash: " + clientHash + " serverHash: " + serverHash
+                + " serverHash2: " + serverHash2);
+        if ((!serverHash.equals(clientHash)) && (!serverHash2.equals(clientHash))
+                && (!("0" + serverHash).equals(clientHash)) && (!("0" + serverHash2).equals(clientHash))) {
             return Response.status(400, "not authorized").build();
         }
         String sp = File.separator;
 
-        String regions = getRegions(getBaseFolderPath()+sp+"simRa_regions.config" );
+        String regions = getRegions(getBaseFolderPath() + sp + "simRa_regions.config");
         if (regions.length() > 2) {
             StreamingOutput stream = new StreamingOutput() {
                 @Override
@@ -63,13 +66,16 @@ public class CheckServlet {
         String[] serverHashes = getHashes();
         String serverHash = serverHashes[0];
         String serverHash2 = serverHashes[1];
-        logger.info("version: " + INTERFACE_VERSION + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
-        if ((!serverHash.equals(clientHash))&&(!serverHash2.equals(clientHash))&&(!("0"+serverHash).equals(clientHash))&&(!("0"+serverHash2).equals(clientHash))){
+        logger.info("version: " + INTERFACE_VERSION + " clientHash: " + clientHash + " serverHash: " + serverHash
+                + " serverHash2: " + serverHash2);
+        if ((!serverHash.equals(clientHash)) && (!serverHash2.equals(clientHash))
+                && (!("0" + serverHash).equals(clientHash)) && (!("0" + serverHash2).equals(clientHash))) {
             return Response.status(400, "not authorized").build();
         }
         String sp = File.separator;
 
-        String[] responseArray = getConfigValues(new String[] {"critical","newestAppVersion","urlToNewestAPK"},getBaseFolderPath()+sp+"simRa_backend.config" );
+        String[] responseArray = getConfigValues(new String[] { "critical", "newestAppVersion", "urlToNewestAPK" },
+                getBaseFolderPath() + sp + "simRa_backend.config");
         if (responseArray != null && responseArray.length > 2) {
             StreamingOutput stream = new StreamingOutput() {
                 @Override
