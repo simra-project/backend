@@ -11,7 +11,6 @@ ARG USER_GID=$USER_UID
 ARG MAVEN_VERSION=3.6.3
 ARG MAVEN_SHA=c35a1803a6e70a126e80b2b3ae33eed961f83ed74d18fcd16909b2d44d7dada3203f1ffe726c17ef8dcca2dcaa9fca676987befeadc9b9f759967a8cb77181c0
 
-COPY maven-settings.xml /usr/share/maven/ref/
 ENV MAVEN_HOME /usr/share/maven
 ENV MAVEN_CONFIG /root/.m2
 
