@@ -74,7 +74,7 @@
                             <artifactId>mvn_package</artifactId>
                             <version>1.0-SNAPSHOT</version>
                             <packaging>jar</packaging>
-                            <file>${basedir}/lib/SimRa_Preprocessing.jar</file>
+                            <file>${basedir}/lib/preprocessing_android.jar</file>
                         </configuration>
                     </execution>
                 </executions>

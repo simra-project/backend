@@ -35,7 +35,7 @@ steps:
     inputs:
       script: |
         cp $(System.ArtifactsDirectory)/drop/classifier.jar ./lib/classifier.jar
-        cp $(System.ArtifactsDirectory)/drop/preprocessing_android.jar ./lib/SimRa_Preprocessing.jar
+        cp $(System.ArtifactsDirectory)/drop/preprocessing_android.jar ./lib/preprocessing_android.jar
         rm -r $(System.ArtifactsDirectory)/drop
         ls ./lib/
 

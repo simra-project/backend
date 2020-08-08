@@ -1,20 +1,37 @@
 package tuberlin.mcc.simra.backend.servlets;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static tuberlin.mcc.simra.backend.control.SimRauthenticator.getHashes;
+import static tuberlin.mcc.simra.backend.control.Util.getBaseFolderPath;
+import static tuberlin.mcc.simra.backend.control.Util.getConfigValues;
+import static tuberlin.mcc.simra.backend.control.Util.getRegions;
 
-import javax.ws.rs.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-import java.io.*;
-import java.nio.file.Paths;
 
-import static tuberlin.mcc.simra.backend.control.SimRauthenticator.getHashes;
-import static tuberlin.mcc.simra.backend.control.Util.getConfigValues;
-import static tuberlin.mcc.simra.backend.control.Util.getRegions;
-import static tuberlin.mcc.simra.backend.control.Util.getBaseFolderPath;
-import org.asanchezf.SimRaNN_Test.Classifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+// ####################################################
+// WARNING!
+// This file should not be used anymore. 
+// It should be deleted as soon as guaranteed that no old app version is using this endoint 
+// Please modify it in the according api version folder!
+// ####################################################
 
 @SuppressWarnings("Duplicates")
 @Path("check")

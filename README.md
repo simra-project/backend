@@ -2,7 +2,7 @@
 
 This project is part of the SimRa research project which includes the following subprojects:
 
-- [sirma-android](https://github.com/simra-project/simra-android/): The SimRa app for Android.
+- [simra-android](https://github.com/simra-project/simra-android/): The SimRa app for Android.
 - [simra-ios](https://github.com/simra-project/simra-ios): The SimRa app for iOS.
 - [backend](https://github.com/simra-project/backend): The SimRa backend software.
 - [dataset](https://github.com/simra-project/dataset): Result data from the SimRa project.
@@ -14,16 +14,15 @@ For more information see [our website](https://www.digital-future.berlin/en/rese
 
 ## Development
 
-Install `SimRaNN_Classifier.jar` into the `lib` folder.
-`mvn install:install-file -Dfile=./lib/SimRaNN_Classifier.jar -DgroupId=org.asanchezf -DartifactId=SimRaNN_Classifier -Dversion=1.0-SNAPSHOT`
+You need Java and Maven installed on you machine. (You can use the [devcontainer](/.devcontainer/devcontainer.json) as reference)
 
-Install `SimRaNN_Preprocessing.jar` into the `lib` folder.
-`mvn install:install-file -Dfile=./lib/SimRa_Preprocessing.jar -DgroupId=de.preprocessing -DartifactId=SimRa_Preprocessing -Dversion=1.0-SNAPSHOT`
+1. Copy  `classifier.jar` and `preprocessing_android.jar` into the `lib` folder.
+> You can get them from our CI pipeline: https://dev.azure.com/DSP-SS20/DSP-SS20/_build?definitionId=5&_a=summary 
 
+2. Run `mvn initialize` to install the custom libraries.
+3. Run `mvn install` to build the project
+4. Copy and run the `jar` from the `/out` folder.
 
-Build: `docker run -it --rm --name my-maven-project -v "C:\Develop\DSP-2020\simra-backend:/usr/src/app" -w /usr/src/app maven:3.6-openjdk-15 mvn clean package` locally for a build.
-
-Run `docker run -it --rm --name my-maven-project -v "C:\Develop\DSP-2020\simra-backend:/usr/src/app" -w /usr/src/app maven:3.6-openjdk-15 bash` for a local development environment.
 
 ## Usage
 
@@ -31,7 +30,7 @@ In order to make it harder abuse the public API we are using a token which is sh
 
 ## Deployment
 
-After building, just execute `java -jar app.jar`. Make sure to provide the `simRa_security.config` in the same folder as the `app.jar`.
+After building, just execute `java -jar app.jar`. Make sure to provide the `simRa_backend.config`, `simRa_security.config`, `simRa_regions.config` in the same folder as the `app.jar`.
 
 ## Installation
 
