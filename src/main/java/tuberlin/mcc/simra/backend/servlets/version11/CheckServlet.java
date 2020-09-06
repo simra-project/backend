@@ -22,8 +22,6 @@ import javax.ws.rs.core.StreamingOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import tuberlin.mcc.simra.backend.control.filter.Secured;
-
 @SuppressWarnings("Duplicates")
 @Path("11")
 public class CheckServlet {
@@ -32,7 +30,6 @@ public class CheckServlet {
 
     @GET
     @Path("check-regions")
-    @Secured
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.TEXT_PLAIN)
     public Response checkRegions() {

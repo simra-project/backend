@@ -2,7 +2,7 @@ package tuberlin.mcc.simra.backend.servlets.version10;
 
 import static java.lang.System.currentTimeMillis;
 import static tuberlin.mcc.simra.backend.control.FileListController.checkKeyValue;
-import static tuberlin.mcc.simra.backend.control.SimRauthenticator.getHashes;
+import static tuberlin.mcc.simra.backend.control.SimRauthenticator.isAuthorized;
 import static tuberlin.mcc.simra.backend.control.Util.directoryAlreadyExists;
 import static tuberlin.mcc.simra.backend.control.Util.getBaseFolderPath;
 import static tuberlin.mcc.simra.backend.control.Util.getConfigValues;
@@ -51,13 +51,8 @@ public class UploadServlet {
     public Response uploadRide(@QueryParam("loc") @DefaultValue("de") String loc,
             @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        String[] serverHashes = getHashes();
-        String serverHash = serverHashes[0];
-        String serverHash2 = serverHashes[1];
-        logger.info("ride upload version: " + INTERFACE_VERSION + " loc: " + loc + "clientHash: " + clientHash
-                + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
-        if ((!serverHash.equals(clientHash)) && (!serverHash2.equals(clientHash))
-                && (!("0" + serverHash).equals(clientHash)) && (!("0" + serverHash2).equals(clientHash))) {
+
+        if (!isAuthorized(clientHash,INTERFACE_VERSION,loc)) {
             return Response.status(400, "not authorized").build();
         }
 
@@ -98,15 +93,7 @@ public class UploadServlet {
             @QueryParam("loc") @DefaultValue("Berlin") String loc,
             @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        String[] serverHashes = getHashes();
-        String serverHash = serverHashes[0];
-        String serverHash2 = serverHashes[1];
-        logger.info("fileHash: " + fileHash + " filePassword: " + filePassword + " version: " + INTERFACE_VERSION
-                + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: "
-                + serverHash2);
-        if (((!serverHash.equals(clientHash)) && (!serverHash2.equals(clientHash))
-                && (!("0" + serverHash).equals(clientHash)) && (!("0" + serverHash2).equals(clientHash)))
-                || (!checkKeyValue(fileHash, filePassword))) {
+        if (isAuthorized(clientHash,INTERFACE_VERSION,loc)) {
             return Response.status(400, "not authorized").build();
         }
 
@@ -137,13 +124,7 @@ public class UploadServlet {
     public Response uploadProfile(@QueryParam("loc") @DefaultValue("de") String loc,
             @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        String[] serverHashes = getHashes();
-        String serverHash = serverHashes[0];
-        String serverHash2 = serverHashes[1];
-        logger.info("profile upload version: " + INTERFACE_VERSION + " loc: " + loc + " clientHash: " + clientHash
-                + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
-        if ((!serverHash.equals(clientHash)) && (!serverHash2.equals(clientHash))
-                && (!("0" + serverHash).equals(clientHash)) && (!("0" + serverHash2).equals(clientHash))) {
+        if (isAuthorized(clientHash,INTERFACE_VERSION,loc)) {
             return Response.status(400, "not authorized").build();
         }
 
@@ -202,15 +183,7 @@ public class UploadServlet {
             @QueryParam("filePassword") String filePassword, @QueryParam("loc") @DefaultValue("Berlin") String loc,
             @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        String[] serverHashes = getHashes();
-        String serverHash = serverHashes[0];
-        String serverHash2 = serverHashes[1];
-        logger.info("fileHash: " + fileHash + " filePassword: " + filePassword + " version: " + INTERFACE_VERSION
-                + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: "
-                + serverHash2);
-        if (((!serverHash.equals(clientHash)) && (!serverHash2.equals(clientHash))
-                && (!("0" + serverHash).equals(clientHash)) && (!("0" + serverHash2).equals(clientHash)))
-                || (!checkKeyValue(fileHash.replace("profile.csv", ""), filePassword))) {
+        if (isAuthorized(clientHash,INTERFACE_VERSION,loc)) {
             return Response.status(400, "not authorized").build();
         }
 
@@ -242,13 +215,7 @@ public class UploadServlet {
     public Response uploadCrashLog(@QueryParam("loc") @DefaultValue("de") String loc,
             @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        String[] serverHashes = getHashes();
-        String serverHash = serverHashes[0];
-        String serverHash2 = serverHashes[1];
-        logger.info("crash upload version: " + INTERFACE_VERSION + " loc: " + loc + " clientHash: " + clientHash
-                + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
-        if ((!serverHash.equals(clientHash)) && (!serverHash2.equals(clientHash))
-                && (!("0" + serverHash).equals(clientHash)) && (!("0" + serverHash2).equals(clientHash))) {
+        if (isAuthorized(clientHash,INTERFACE_VERSION,loc)) {
             return Response.status(400, "not authorized").build();
         }
 
@@ -284,15 +251,7 @@ public class UploadServlet {
             @QueryParam("loc") @DefaultValue("Berlin") String loc,
             @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        String[] serverHashes = getHashes();
-        String serverHash = serverHashes[0];
-        String serverHash2 = serverHashes[1];
-        logger.info("fileHash: " + fileHash + " filePassword: " + filePassword + " version: " + INTERFACE_VERSION
-                + " loc: " + loc + " clientHash: " + clientHash + " serverHash: " + serverHash + " serverHash2: "
-                + serverHash2);
-        if (((!serverHash.equals(clientHash)) && (!serverHash2.equals(clientHash))
-                && (!("0" + serverHash).equals(clientHash)) && (!("0" + serverHash2).equals(clientHash)))
-                || (!checkKeyValue(fileHash.replace("profile.csv", ""), filePassword))) {
+        if (isAuthorized(clientHash,INTERFACE_VERSION,loc)) {
             return Response.status(400, "not authorized").build();
         }
 
@@ -335,13 +294,7 @@ public class UploadServlet {
     @Consumes(MediaType.TEXT_PLAIN)
     public Response checkVersion(@QueryParam("clientHash") @DefaultValue("10") String clientHash) {
 
-        String[] serverHashes = getHashes();
-        String serverHash = serverHashes[0];
-        String serverHash2 = serverHashes[1];
-        logger.info("version: " + INTERFACE_VERSION + " clientHash: " + clientHash + " serverHash: " + serverHash
-                + " serverHash2: " + serverHash2);
-        if ((!serverHash.equals(clientHash)) && (!serverHash2.equals(clientHash))
-                && (!("0" + serverHash).equals(clientHash)) && (!("0" + serverHash2).equals(clientHash))) {
+        if (isAuthorized(clientHash,INTERFACE_VERSION,"checkVersion")) {
             return Response.status(400, "not authorized").build();
         }
         String sp = File.separator;

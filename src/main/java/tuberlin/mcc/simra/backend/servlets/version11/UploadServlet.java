@@ -1,6 +1,7 @@
 package tuberlin.mcc.simra.backend.servlets.version11;
 
 import static java.lang.System.currentTimeMillis;
+import static tuberlin.mcc.simra.backend.control.SimRauthenticator.isAuthorized;
 import static tuberlin.mcc.simra.backend.control.Util.directoryAlreadyExists;
 import static tuberlin.mcc.simra.backend.control.Util.getBaseFolderPath;
 import static tuberlin.mcc.simra.backend.control.Util.overWriteContentToFile;
@@ -32,11 +33,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import tuberlin.mcc.simra.backend.control.FileListController;
-import tuberlin.mcc.simra.backend.control.filter.Secured;
 
 @SuppressWarnings("Duplicates")
 @Path("11")
-@Secured
 public class UploadServlet {
 
     private static Logger logger = LoggerFactory.getLogger(UploadServlet.class.getName());
@@ -47,11 +46,15 @@ public class UploadServlet {
     @Path("ride")
     @Consumes({ MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN })
     @Produces(MediaType.TEXT_PLAIN)
-    public Response uploadRide(@QueryParam("loc") @DefaultValue("de") String loc, String content) {
-        logger.info(content);
+    public Response uploadRide(@QueryParam("loc") @DefaultValue("de") String loc,
+                               @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
+
+        if (!isAuthorized(clientHash,INTERFACE_VERSION,loc)) {
+            return Response.status(400, "not authorized").build();
+        }
 
         String fileBody = content.substring(content.indexOf(System.lineSeparator()) + 1);
-        String hash = "VM2_" + DigestUtils.md5Hex(fileBody);
+        String hash = "VM2_" + fileBody.hashCode();
 
         String password = RandomStringUtils.randomAlphanumeric(10);
 
@@ -84,7 +87,12 @@ public class UploadServlet {
             MediaType.TEXT_PLAIN })
     @Produces(MediaType.TEXT_PLAIN)
     public Response updateRide(@QueryParam("fileHash") String fileHash, @QueryParam("filePassword") String filePassword,
-            @QueryParam("loc") @DefaultValue("Berlin") String loc, String content) {
+            @QueryParam("loc") @DefaultValue("Berlin") String loc,
+                               @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
+
+        if (!isAuthorized(clientHash,INTERFACE_VERSION,loc)) {
+            return Response.status(400, "not authorized").build();
+        }
 
         String directory = "SimRa" + sp + loc + sp + "Rides";
 
@@ -110,8 +118,12 @@ public class UploadServlet {
     @Path("profile")
     @Consumes({ MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN })
     @Produces(MediaType.TEXT_PLAIN)
-    public Response uploadProfile(@QueryParam("loc") @DefaultValue("de") String loc, String content) {
-        logger.info(content);
+    public Response uploadProfile(@QueryParam("loc") @DefaultValue("de") String loc,
+                                  @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
+
+        if (!isAuthorized(clientHash,INTERFACE_VERSION,loc)) {
+            return Response.status(400, "not authorized").build();
+        }
 
         String hash = "VM2_" + (RandomStringUtils.randomAlphanumeric(30)).hashCode();
         String password = RandomStringUtils.randomAlphanumeric(10);
@@ -147,7 +159,10 @@ public class UploadServlet {
     @Produces(MediaType.TEXT_PLAIN)
     public Response updateProfile(@QueryParam("fileHash") String fileHash,
             @QueryParam("filePassword") String filePassword, @QueryParam("loc") @DefaultValue("Berlin") String loc,
-            String content) {
+                                  @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
+        if (!isAuthorized(clientHash,INTERFACE_VERSION,loc)) {
+            return Response.status(400, "not authorized").build();
+        }
 
         String directory = "SimRa" + sp + loc + sp + "Profiles";
         fileHash = fileHash.replace("profile.csv", "");
@@ -174,7 +189,12 @@ public class UploadServlet {
     @Path("crash")
     @Consumes({ MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN })
     @Produces(MediaType.TEXT_PLAIN)
-    public Response uploadCrashLog(@QueryParam("loc") @DefaultValue("de") String loc, String content) {
+    public Response uploadCrashLog(@QueryParam("loc") @DefaultValue("de") String loc,
+                                   @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
+
+        if (!isAuthorized(clientHash,INTERFACE_VERSION,loc)) {
+            return Response.status(400, "not authorized").build();
+        }
 
         String ts = "";
         try {
@@ -205,9 +225,12 @@ public class UploadServlet {
             MediaType.TEXT_PLAIN })
     @Produces(MediaType.TEXT_PLAIN)
     public Response updatePut(@QueryParam("fileHash") String fileHash, @QueryParam("filePassword") String filePassword,
-            @QueryParam("loc") @DefaultValue("Berlin") String loc, String content) {
+            @QueryParam("loc") @DefaultValue("Berlin") String loc,
+                              @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        logger.info(content);
+        if (!isAuthorized(clientHash,INTERFACE_VERSION,loc)) {
+            return Response.status(400, "not authorized").build();
+        }
 
         return overWriteAndReturnStatus(fileHash, String.valueOf(INTERFACE_VERSION), loc, content);
 

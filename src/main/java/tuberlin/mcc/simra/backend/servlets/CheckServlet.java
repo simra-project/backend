@@ -1,6 +1,6 @@
 package tuberlin.mcc.simra.backend.servlets;
 
-import static tuberlin.mcc.simra.backend.control.SimRauthenticator.getHashes;
+import static tuberlin.mcc.simra.backend.control.SimRauthenticator.isAuthorized;
 import static tuberlin.mcc.simra.backend.control.Util.getBaseFolderPath;
 import static tuberlin.mcc.simra.backend.control.Util.getConfigValues;
 import static tuberlin.mcc.simra.backend.control.Util.getRegions;
@@ -47,13 +47,7 @@ public class CheckServlet {
     @Consumes(MediaType.TEXT_PLAIN)
     public Response checkRegions(@QueryParam("clientHash") @DefaultValue("10") String clientHash) {
 
-        String[] serverHashes = getHashes();
-        String serverHash = serverHashes[0];
-        String serverHash2 = serverHashes[1];
-        logger.info("regions: " + INTERFACE_VERSION + " clientHash: " + clientHash + " serverHash: " + serverHash
-                + " serverHash2: " + serverHash2);
-        if ((!serverHash.equals(clientHash)) && (!serverHash2.equals(clientHash))
-                && (!("0" + serverHash).equals(clientHash)) && (!("0" + serverHash2).equals(clientHash))) {
+        if (!isAuthorized(clientHash,INTERFACE_VERSION,"checkRegions")) {
             return Response.status(400, "not authorized").build();
         }
         String sp = File.separator;
@@ -80,13 +74,7 @@ public class CheckServlet {
     @Consumes(MediaType.TEXT_PLAIN)
     public Response checkVersion(@QueryParam("clientHash") @DefaultValue("10") String clientHash) {
 
-        String[] serverHashes = getHashes();
-        String serverHash = serverHashes[0];
-        String serverHash2 = serverHashes[1];
-        logger.info("version: " + INTERFACE_VERSION + " clientHash: " + clientHash + " serverHash: " + serverHash
-                + " serverHash2: " + serverHash2);
-        if ((!serverHash.equals(clientHash)) && (!serverHash2.equals(clientHash))
-                && (!("0" + serverHash).equals(clientHash)) && (!("0" + serverHash2).equals(clientHash))) {
+        if (!isAuthorized(clientHash,INTERFACE_VERSION,"checkVersion")) {
             return Response.status(400, "not authorized").build();
         }
         String sp = File.separator;

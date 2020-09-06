@@ -15,6 +15,8 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static tuberlin.mcc.simra.backend.control.SimRauthenticator.isAuthorized;
+
 // ####################################################
 // WARNING!
 // This file should not be used anymore. 
@@ -33,6 +35,10 @@ public class UpdateServlet {
     @Produces(MediaType.TEXT_PLAIN)
     public Response getResource(@PathParam("key") String key, @QueryParam("loc") @DefaultValue("de") String loc,
             @QueryParam("clientHash") @DefaultValue("10") String clientHash, String value) {
+
+        if (!isAuthorized(clientHash,-1 ,loc)) {
+            return Response.status(400, "not authorized").build();
+        }
 
         // logger.info("key: " + key + " value: " + value + " clientHash: " +
         // clientHash);

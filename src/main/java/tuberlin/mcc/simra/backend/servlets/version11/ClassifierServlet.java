@@ -26,11 +26,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import preprocessing.AdaptRide;
-import tuberlin.mcc.simra.backend.control.filter.Secured;
 
 @SuppressWarnings("Duplicates")
 @Path("11")
-@Secured
 public class ClassifierServlet {
 
     String analyzeFileName = "ride.csv";

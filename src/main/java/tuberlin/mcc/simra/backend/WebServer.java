@@ -47,13 +47,6 @@ public class WebServer {
         // reading fileList.csv
         loadFileCSV(getBaseFolderPath() + sp + "fileList.csv");
 
-        // Load sever secret
-        String[] hashPrefixResponseArray = getConfigValues(new String[] { "hash_prefix" },
-                getBaseFolderPath() + sp + "simRa_security.config");
-        if (hashPrefixResponseArray != null && hashPrefixResponseArray.length > 0) {
-            WebServer.secret = hashPrefixResponseArray[0];
-        }
-
         // servlet handlers
         ServletContextHandler servletContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
         servletContext.setContextPath("/");
