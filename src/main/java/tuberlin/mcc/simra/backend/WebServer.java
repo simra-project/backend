@@ -36,7 +36,7 @@ public class WebServer {
         // Activate Jetty Logging (Development)
         Log.setLog(new StdErrLog());
 
-        int port = 8080;
+        int port = 8082;
         logger.info("Setting up server at port " + port);
 
         Server server = new Server(port);

@@ -1,11 +1,9 @@
 package tuberlin.mcc.simra.backend.servlets.version10;
 
 import static java.lang.System.currentTimeMillis;
-import static tuberlin.mcc.simra.backend.control.FileListController.checkKeyValue;
 import static tuberlin.mcc.simra.backend.control.SimRauthenticator.isAuthorized;
 import static tuberlin.mcc.simra.backend.control.Util.directoryAlreadyExists;
 import static tuberlin.mcc.simra.backend.control.Util.getBaseFolderPath;
-import static tuberlin.mcc.simra.backend.control.Util.getConfigValues;
 import static tuberlin.mcc.simra.backend.control.Util.overWriteContentToFile;
 
 import java.io.BufferedWriter;
@@ -19,7 +17,6 @@ import java.nio.file.Paths;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -46,13 +43,12 @@ public class UploadServlet {
 
     @POST
     @Path("ride")
-    @Consumes({ MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN })
+    @Consumes({MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN})
     @Produces(MediaType.TEXT_PLAIN)
     public Response uploadRide(@QueryParam("loc") @DefaultValue("de") String loc,
-            @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
+                               @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-
-        if (!isAuthorized(clientHash,INTERFACE_VERSION,loc)) {
+        if (!isAuthorized(clientHash, INTERFACE_VERSION, loc)) {
             return Response.status(400, "not authorized").build();
         }
 
@@ -86,18 +82,18 @@ public class UploadServlet {
 
     @PUT
     @Path("ride")
-    @Consumes({ MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN,
-            MediaType.TEXT_PLAIN })
+    @Consumes({MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN,
+            MediaType.TEXT_PLAIN})
     @Produces(MediaType.TEXT_PLAIN)
     public Response updateRide(@QueryParam("fileHash") String fileHash, @QueryParam("filePassword") String filePassword,
-            @QueryParam("loc") @DefaultValue("Berlin") String loc,
-            @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
+                               @QueryParam("loc") @DefaultValue("Berlin") String loc,
+                               @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        if (isAuthorized(clientHash,INTERFACE_VERSION,loc)) {
+        if (!isAuthorized(clientHash, INTERFACE_VERSION, loc)) {
             return Response.status(400, "not authorized").build();
         }
 
-        String directory = "SimRa" + sp + loc + sp + "Rides";
+        String directory = getBaseFolderPath() + sp + "SimRa" + sp + loc + sp + "Rides";
 
         if (!directoryAlreadyExists(directory)) {
             try {
@@ -107,8 +103,8 @@ public class UploadServlet {
             }
         }
 
-        logger.info("writing to filePath: " + getBaseFolderPath() + sp + directory + sp + fileHash);
-        boolean success = overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + fileHash, content);
+        logger.info("writing to filePath: " + directory + sp + fileHash);
+        boolean success = overWriteContentToFile(directory + sp + fileHash, content);
         if (success) {
             return Response.status(200, "OK").build();
         } else {
@@ -119,12 +115,12 @@ public class UploadServlet {
 
     @POST
     @Path("profile")
-    @Consumes({ MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN })
+    @Consumes({MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN})
     @Produces(MediaType.TEXT_PLAIN)
     public Response uploadProfile(@QueryParam("loc") @DefaultValue("de") String loc,
-            @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
+                                  @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        if (isAuthorized(clientHash,INTERFACE_VERSION,loc)) {
+        if (!isAuthorized(clientHash, INTERFACE_VERSION, loc)) {
             return Response.status(400, "not authorized").build();
         }
 
@@ -153,37 +149,17 @@ public class UploadServlet {
             }
         };
         return Response.ok(stream).build();
-    }/*
-      * else { String errorID = RandomStringUtils.randomAlphanumeric(10) + ".txt";
-      * String errorLogDirectory = "SimRa" + sp + "ErrorLogs" + sp + errorID; logger.
-      * error("There was a ride post request with already existing hash as key. The log is saved under "
-      * + errorLogDirectory); try {
-      * Files.createDirectories(Paths.get(errorLogDirectory)); } catch (IOException
-      * e) { e.printStackTrace(); } finally { StringBuilder errorContent = new
-      * StringBuilder();
-      * errorContent.append("loc: ").append(loc).append(System.lineSeparator())
-      * .append("clientHash: ").append(clientHash).append(System.lineSeparator())
-      * .append("serverHash: ").append(serverHash).append(System.lineSeparator())
-      * .append("serverHash2: ").append(serverHash2).append(System.lineSeparator())
-      * .append("profileContentHash: ").append(hash).append(System.lineSeparator())
-      * .append("password: ").append(password).append(System.lineSeparator())
-      * .append("content: ").append(System.lineSeparator()) .append(content);
-      * 
-      * overWriteContentToFile(errorLogDirectory , errorContent.toString()); }
-      * 
-      * return Response.status(404, "File already exists").build(); } }
-      */
+    }
 
     @PUT
     @Path("profile")
-    @Consumes({ MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN,
-            MediaType.TEXT_PLAIN })
+    @Consumes({MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN,
+            MediaType.TEXT_PLAIN})
     @Produces(MediaType.TEXT_PLAIN)
     public Response updateProfile(@QueryParam("fileHash") String fileHash,
-            @QueryParam("filePassword") String filePassword, @QueryParam("loc") @DefaultValue("Berlin") String loc,
-            @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
-
-        if (isAuthorized(clientHash,INTERFACE_VERSION,loc)) {
+                                  @QueryParam("filePassword") String filePassword, @QueryParam("loc") @DefaultValue("Berlin") String loc,
+                                  @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
+        if (!isAuthorized(clientHash, INTERFACE_VERSION, loc)) {
             return Response.status(400, "not authorized").build();
         }
 
@@ -210,12 +186,12 @@ public class UploadServlet {
 
     @POST
     @Path("crash")
-    @Consumes({ MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN })
+    @Consumes({MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN})
     @Produces(MediaType.TEXT_PLAIN)
     public Response uploadCrashLog(@QueryParam("loc") @DefaultValue("de") String loc,
-            @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
+                                   @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        if (isAuthorized(clientHash,INTERFACE_VERSION,loc)) {
+        if (!isAuthorized(clientHash, INTERFACE_VERSION, loc)) {
             return Response.status(400, "not authorized").build();
         }
 
@@ -244,14 +220,14 @@ public class UploadServlet {
 
     @PUT
     @Path("update")
-    @Consumes({ MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN,
-            MediaType.TEXT_PLAIN })
+    @Consumes({MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN,
+            MediaType.TEXT_PLAIN})
     @Produces(MediaType.TEXT_PLAIN)
     public Response updatePut(@QueryParam("fileHash") String fileHash, @QueryParam("filePassword") String filePassword,
-            @QueryParam("loc") @DefaultValue("Berlin") String loc,
-            @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
+                              @QueryParam("loc") @DefaultValue("Berlin") String loc,
+                              @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        if (isAuthorized(clientHash,INTERFACE_VERSION,loc)) {
+        if (!isAuthorized(clientHash, INTERFACE_VERSION, loc)) {
             return Response.status(400, "not authorized").build();
         }
 
@@ -261,8 +237,6 @@ public class UploadServlet {
 
     // fileHash: filename, content: content of the file
     private Response overWriteAndReturnStatus(String fileHash, String version, String loc, String content) {
-        String sp = File.separator;
-
         String directory;
 
         if (fileHash.contains("profile.csv")) {
@@ -287,33 +261,4 @@ public class UploadServlet {
             return Response.status(500, "Error").build();
         }
     }
-
-    @GET
-    @Path("version")
-    @Produces(MediaType.TEXT_PLAIN)
-    @Consumes(MediaType.TEXT_PLAIN)
-    public Response checkVersion(@QueryParam("clientHash") @DefaultValue("10") String clientHash) {
-
-        if (isAuthorized(clientHash,INTERFACE_VERSION,"checkVersion")) {
-            return Response.status(400, "not authorized").build();
-        }
-        String sp = File.separator;
-
-        String[] responseArray = getConfigValues(new String[] { "critical", "newestAppVersion", "urlToNewestAPK" },
-                getBaseFolderPath() + sp + "simRa_backend.config");
-        if (responseArray != null && responseArray.length > 2) {
-            StreamingOutput stream = new StreamingOutput() {
-                @Override
-                public void write(OutputStream os) throws IOException, WebApplicationException {
-                    Writer writer = new BufferedWriter(new OutputStreamWriter(os));
-                    writer.write(responseArray[0] + "splitter" + responseArray[1] + "splitter" + responseArray[2]);
-                    writer.flush();
-                }
-            };
-            return Response.ok(stream).build();
-        } else {
-            return Response.status(404, "ERROR: config could not be read").build();
-        }
-    }
-
 }

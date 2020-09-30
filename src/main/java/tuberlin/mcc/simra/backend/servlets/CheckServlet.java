@@ -1,9 +1,7 @@
 package tuberlin.mcc.simra.backend.servlets;
 
 import static tuberlin.mcc.simra.backend.control.SimRauthenticator.isAuthorized;
-import static tuberlin.mcc.simra.backend.control.Util.getBaseFolderPath;
-import static tuberlin.mcc.simra.backend.control.Util.getConfigValues;
-import static tuberlin.mcc.simra.backend.control.Util.getRegions;
+import static tuberlin.mcc.simra.backend.control.Util.*;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,13 +10,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
@@ -26,20 +18,12 @@ import javax.ws.rs.core.StreamingOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// ####################################################
-// WARNING!
-// This file should not be used anymore. 
-// It should be deleted as soon as guaranteed that no old app version is using this endoint 
-// Please modify it in the according api version folder!
-// ####################################################
-
 @SuppressWarnings("Duplicates")
 @Path("check")
 public class CheckServlet {
 
-    private static Logger logger = LoggerFactory.getLogger(CheckServlet.class.getName());
-    private static String sp = File.separator;
     private static int INTERFACE_VERSION = 10;
+    private static String sp = File.separator;
 
     @GET
     @Path("regions")
@@ -50,7 +34,6 @@ public class CheckServlet {
         if (!isAuthorized(clientHash,INTERFACE_VERSION,"checkRegions")) {
             return Response.status(400, "not authorized").build();
         }
-        String sp = File.separator;
 
         String regions = getRegions(getBaseFolderPath() + sp + "simRa_regions.config");
         if (regions.length() > 2) {
@@ -77,7 +60,6 @@ public class CheckServlet {
         if (!isAuthorized(clientHash,INTERFACE_VERSION,"checkVersion")) {
             return Response.status(400, "not authorized").build();
         }
-        String sp = File.separator;
 
         String[] responseArray = getConfigValues(new String[] { "critical", "newestAppVersion", "urlToNewestAPK" },
                 getBaseFolderPath() + sp + "simRa_backend.config");
@@ -95,5 +77,4 @@ public class CheckServlet {
             return Response.status(404, "ERROR: config could not be read").build();
         }
     }
-
 }

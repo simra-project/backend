@@ -1,0 +1,79 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>edu.emory.mathcs</groupId>
+  <artifactId>JTransforms</artifactId>
+  <version>2.4</version>
+  <packaging>jar</packaging>
+  <name>JTransforms</name>
+  <description>
+      JTransforms is the first, open source, multithreaded FFT library written 
+      in pure Java. Currently, four types of transforms are available: 
+      Discrete Fourier Transform (DFT), Discrete Cosine Transform (DCT), 
+      Discrete Sine Transform (DST) and Discrete Hartley Transform (DHT). 
+      The code is derived from General Purpose FFT Package written by 
+      Takuya Ooura and from Java FFTPack written by Baoshe Zhang.
+  </description>
+  <url>https://sites.google.com/site/piotrwendykier/software/jtransforms</url>
+  <licenses>
+    <license>
+      <name>MPL 2.0</name>
+      <url>http://www.mozilla.org/MPL/</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://jtransforms.svn.sourceforge.net/svnroot/jtransforms </url>
+    <connection>https://jtransforms.svn.sourceforge.net/svnroot/jtransforms </connection>
+  </scm>
+  <developers>
+    <developer>
+      <id>Piotr Wendykier</id>
+      <name>Piotr Wendykier</name>
+      <email>piotr.wendykier@gmail.com</email>
+    </developer>
+  </developers>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>  
+  
+  <build>
+    <plugins>
+        <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+            <source>1.7</source>
+            <target>1.7</target>
+            </configuration>
+        </plugin>
+        
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+                <execution>
+                <id>attach-sources</id>
+                <goals>
+                    <goal>jar</goal>
+                </goals>
+                </execution>
+            </executions>
+        </plugin>
+        
+        <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+                <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                    <goal>jar</goal>
+                </goals>
+                </execution>
+            </executions>
+        </plugin>                
+    </plugins>
+  </build>
+</project>

@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: vsts
+Build-Jdk: 1.8.0_265
+Main-Class: classifier
+

@@ -70,7 +70,7 @@
                             <goal>install-file</goal>
                         </goals>
                         <configuration>
-                            <groupId>preprocessing</groupId>
+                            <groupId>ds</groupId>
                             <artifactId>mvn_package</artifactId>
                             <version>1.0-SNAPSHOT</version>
                             <packaging>jar</packaging>

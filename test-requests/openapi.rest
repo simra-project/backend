@@ -1,1 +1,1 @@
-GET http://localhost:8080/openapi HTTP/1.1
+GET http://localhost:8082/openapi HTTP/1.1

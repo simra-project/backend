@@ -48,8 +48,8 @@ public class SimRauthenticator {
         logger.info("ride upload version: " + interfaceVersion + " loc: " + loc + "clientHash: " + clientHash
                 + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
 
-        return ((!serverHash.equals(clientHash)) && (!serverHash2.equals(clientHash))
-                && (!("0" + serverHash).equals(clientHash)) && (!("0" + serverHash2).equals(clientHash)));
+        return ((serverHash.equals(clientHash)) || (serverHash2.equals(clientHash))
+                || (("0" + serverHash).equals(clientHash)) || (("0" + serverHash2).equals(clientHash)));
 
             // return Response.status(400, "not authorized").build();
 
