@@ -1,2 +1,4 @@
+# Uncomment next line for unprotected Server (no https)
 keystore_password=PASSWORD_OF_CERTIFICATE.JKS
+# Client Secret 
 hash_prefix=RANDOM_PREFIX_SAME_AS_IN_THE_APP

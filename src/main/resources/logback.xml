@@ -21,12 +21,12 @@
         </encoder>
     </appender>
 
-    <logger name="tuberlin.mcc.simra.backend.servlets" level="debug" additivity="false">
+    <logger name="simra.backend.servlets" level="debug" additivity="false">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILEOUT" />
     </logger>
 
-    <logger name="tuberlin.mcc.simra.backend" level="info" additivity="false">
+    <logger name="simra.backend" level="info" additivity="false">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILEOUT" />
     </logger>

@@ -1,21 +1,30 @@
 package tuberlin.mcc.simra.backend.control;
 
-import java.io.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import tuberlin.mcc.simra.backend.servlets.version10.UploadServlet;
+
+import javax.ws.rs.core.Response;
+
+import static tuberlin.mcc.simra.backend.control.Util.getConfigValues;
+
+import java.io.File;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static tuberlin.mcc.simra.backend.control.Util.getConfigValues;
 
 public class SimRauthenticator {
+    private static Logger logger = LoggerFactory.getLogger(SimRauthenticator.class.getName());
 
-    public static String[] getHashes() {
+    public static boolean isAuthorized(String clientHash, int interfaceVersion, String loc) {
         String prefix = null;
         java.nio.file.Path currentRelativePath = Paths.get("");
         String absolutePath = currentRelativePath.toAbsolutePath().toString();
         String sp = File.separator;
 
-        String[] responseArray = getConfigValues(new String[] {"hash_prefix"},absolutePath+sp+"simRa_security.config" );
+        String[] responseArray = getConfigValues(new String[] { "hash_prefix" },
+                absolutePath + sp + "simRa_security.config");
         if (responseArray != null && responseArray.length > 0) {
             prefix = responseArray[0];
         }
@@ -26,7 +35,7 @@ public class SimRauthenticator {
 
         oauth += prefix;
 
-        Date dateTomorrow = new Date(dateToday.getTime()+(1000*24*60*60));
+        Date dateTomorrow = new Date(dateToday.getTime() + (1000 * 24 * 60 * 60));
         String oauth2 = sdf.format(dateTomorrow);
         oauth2 += prefix;
 
@@ -36,7 +45,15 @@ public class SimRauthenticator {
         int hash2 = oauth2.hashCode();
         String serverHash2 = Integer.toHexString(hash2);
 
-        return new String[] {serverHash,serverHash2};
+        logger.info("ride upload version: " + interfaceVersion + " loc: " + loc + "clientHash: " + clientHash
+                + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
+
+        return ((serverHash.equals(clientHash)) || (serverHash2.equals(clientHash))
+                || (("0" + serverHash).equals(clientHash)) || (("0" + serverHash2).equals(clientHash)));
+
+            // return Response.status(400, "not authorized").build();
+
     }
+
 
 }

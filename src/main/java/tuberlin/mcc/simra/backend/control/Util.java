@@ -6,27 +6,20 @@ import tuberlin.mcc.simra.backend.servlets.version10.UploadServlet;
 
 import java.io.*;
 import java.nio.file.Paths;
+import java.nio.file.Files;
 
 public class Util {
 
     private static Logger logger = LoggerFactory.getLogger(UploadServlet.class.getName());
 
+    public static String getBaseFolderPath() {
+        return System.getProperty("user.dir");
+    }
+
 
     public static Boolean directoryAlreadyExists(String path){
 
-        // Boolean alreadyExists = false;
-
-        java.nio.file.Path currentRelativePath = Paths.get("");
-        String absolutePath = currentRelativePath.toAbsolutePath().toString();
-        File file = new File(absolutePath);
-        String[] fileNames = file.list();
-        for (int i = 0; i < fileNames.length; i++) {
-            // logger.debug("fileNames[i]: " + fileNames[i]);
-            if(path.equals(fileNames[i])){
-                return true;
-            }
-        }
-        return false;
+        return Files.exists(Paths.get(path));
     }
 
     public static void appendTextToFile (String filepath, String content) {
@@ -72,8 +65,8 @@ public class Util {
         return result;
     }
 
-    public static String getRegions (String pathToRegions) {
-        File regionsFile = new File(pathToRegions);
+    public static String getContentOfTextFile(String pathToTextFile) {
+        File regionsFile = new File(pathToTextFile);
         StringBuilder result = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(regionsFile)))) {
             String line;

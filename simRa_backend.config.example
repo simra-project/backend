@@ -1,3 +1,5 @@
 critical=false
+
+# Deprecated (only for compatibility with older version / before Server API version 11)
 newestAppVersion=34
 urlToNewestAPK=https://www.redaktion.tu-berlin.de/fileadmin/fg344/simra/SimRa.apk
