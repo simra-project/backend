@@ -15,9 +15,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @SuppressWarnings("Duplicates")
 @Path("check")
 public class CheckServlet {
@@ -35,7 +32,7 @@ public class CheckServlet {
             return Response.status(400, "not authorized").build();
         }
 
-        String regions = getRegions(getBaseFolderPath() + sp + "simRa_regions.config");
+        String regions = getContentOfTextFile(getBaseFolderPath() + sp + "simRa_regions.config");
         if (regions.length() > 2) {
             StreamingOutput stream = new StreamingOutput() {
                 @Override
@@ -50,6 +47,59 @@ public class CheckServlet {
             return Response.status(404, "ERROR: config could not be read").build();
         }
     }
+
+    @GET
+    @Path("news_de")
+    @Produces(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.TEXT_PLAIN)
+    public Response checkNewsDE(@QueryParam("clientHash") @DefaultValue("10") String clientHash) {
+
+        if (!isAuthorized(clientHash,INTERFACE_VERSION,"checkNews_de")) {
+            return Response.status(400, "not authorized").build();
+        }
+
+        String news = getContentOfTextFile(getBaseFolderPath() + sp + "simRa_news_de.config");
+        if (news.length() > 2) {
+            StreamingOutput stream = new StreamingOutput() {
+                @Override
+                public void write(OutputStream os) throws IOException, WebApplicationException {
+                    Writer writer = new BufferedWriter(new OutputStreamWriter(os));
+                    writer.write(news);
+                    writer.flush();
+                }
+            };
+            return Response.ok(stream).build();
+        } else {
+            return Response.status(404, "ERROR: config could not be read").build();
+        }
+    }
+
+    @GET
+    @Path("news_en")
+    @Produces(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.TEXT_PLAIN)
+    public Response checkNewsEN(@QueryParam("clientHash") @DefaultValue("10") String clientHash) {
+
+        if (!isAuthorized(clientHash,INTERFACE_VERSION,"checkNews_en")) {
+            return Response.status(400, "not authorized").build();
+        }
+
+        String news = getContentOfTextFile(getBaseFolderPath() + sp + "simRa_news_en.config");
+        if (news.length() > 2) {
+            StreamingOutput stream = new StreamingOutput() {
+                @Override
+                public void write(OutputStream os) throws IOException, WebApplicationException {
+                    Writer writer = new BufferedWriter(new OutputStreamWriter(os));
+                    writer.write(news);
+                    writer.flush();
+                }
+            };
+            return Response.ok(stream).build();
+        } else {
+            return Response.status(404, "ERROR: config could not be read").build();
+        }
+    }
+
 
     @GET
     @Path("version")

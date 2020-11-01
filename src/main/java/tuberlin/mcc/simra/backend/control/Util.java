@@ -65,8 +65,8 @@ public class Util {
         return result;
     }
 
-    public static String getRegions (String pathToRegions) {
-        File regionsFile = new File(pathToRegions);
+    public static String getContentOfTextFile(String pathToTextFile) {
+        File regionsFile = new File(pathToTextFile);
         StringBuilder result = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(regionsFile)))) {
             String line;
