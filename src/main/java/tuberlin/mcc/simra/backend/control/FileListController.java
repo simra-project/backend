@@ -1,5 +1,6 @@
 package tuberlin.mcc.simra.backend.control;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tuberlin.mcc.simra.backend.servlets.version10.UploadServlet;
@@ -30,6 +31,26 @@ public class FileListController {
         } else {
             return false;
         }
+    }
+
+    public static String generateRideKey(String fileBody) {
+        String hash = "VM2_" + fileBody.hashCode();
+        int suffix = 1;
+        while (containsKey(hash)) {
+            suffix++;
+            hash = hash.split("#")[0] + "#" + suffix;
+        }
+        return hash;
+    }
+
+    public static String generateProfileKey() {
+        String hash = "VM2_" + (RandomStringUtils.randomAlphanumeric(30)).hashCode();
+        int suffix = 1;
+        while (containsKey(hash)) {
+            suffix++;
+            hash = hash.split("#")[0] + "#" + suffix;
+        }
+        return hash;
     }
 
     public static boolean containsKey (String key) {

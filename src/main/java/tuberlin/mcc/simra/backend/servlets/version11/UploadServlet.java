@@ -1,6 +1,7 @@
 package tuberlin.mcc.simra.backend.servlets.version11;
 
 import static java.lang.System.currentTimeMillis;
+import static tuberlin.mcc.simra.backend.control.FileListController.*;
 import static tuberlin.mcc.simra.backend.control.SimRauthenticator.isAuthorized;
 import static tuberlin.mcc.simra.backend.control.Util.directoryAlreadyExists;
 import static tuberlin.mcc.simra.backend.control.Util.getBaseFolderPath;
@@ -27,7 +28,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,12 +54,10 @@ public class UploadServlet {
         }
 
         String fileBody = content.substring(content.indexOf(System.lineSeparator()) + 1);
-        String hash = "VM2_" + fileBody.hashCode();
-
+        String key = generateRideKey(fileBody);
         String password = RandomStringUtils.randomAlphanumeric(10);
-
         String directory = getBaseFolderPath() + sp + "SimRa" + sp + loc + sp + "Rides";
-        FileListController.updateKeyValue(hash, password, getBaseFolderPath() + sp + "fileList.csv");
+        updateKeyValue(key, password, getBaseFolderPath() + sp + "fileList.csv");
         if (!directoryAlreadyExists(directory)) {
             try {
                 Files.createDirectories(Paths.get(directory));
@@ -68,13 +66,13 @@ public class UploadServlet {
             }
         }
 
-        overWriteContentToFile(directory + sp + hash, content);
+        overWriteContentToFile(directory + sp + key, content);
 
         StreamingOutput stream = new StreamingOutput() {
             @Override
             public void write(OutputStream os) throws IOException, WebApplicationException {
                 Writer writer = new BufferedWriter(new OutputStreamWriter(os));
-                writer.write(hash + "," + password);
+                writer.write(key + "," + password);
                 writer.flush();
             }
         };
@@ -125,7 +123,7 @@ public class UploadServlet {
             return Response.status(400, "not authorized").build();
         }
 
-        String hash = "VM2_" + (RandomStringUtils.randomAlphanumeric(30)).hashCode();
+        String hash = generateProfileKey();
         String password = RandomStringUtils.randomAlphanumeric(10);
 
         // if(!FileListController.containsKey(hash)) {
