@@ -1,5 +1,6 @@
 package tuberlin.mcc.simra.backend.control;
 
+import org.asanchezf.SimRaNN_Test.Classifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tuberlin.mcc.simra.backend.servlets.version10.UploadServlet;
@@ -7,6 +8,7 @@ import tuberlin.mcc.simra.backend.servlets.version10.UploadServlet;
 import java.io.*;
 import java.nio.file.Paths;
 import java.nio.file.Files;
+import java.util.ArrayList;
 
 public class Util {
 
@@ -79,4 +81,19 @@ public class Util {
         }
         return result.toString();
     }
-}
+
+    public static ArrayList<Long> getResultsToSend(String pathToBucketsFile, Classifier c) {
+        ArrayList<Long> results = new ArrayList<>();
+        File bucketsFile = new File(pathToBucketsFile);
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(bucketsFile)))) {
+            String line;
+            while ((line = br.readLine()) != null && results.size() <= 5) {
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
+    }

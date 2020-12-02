@@ -45,7 +45,7 @@ public class SimRauthenticator {
         int hash2 = oauth2.hashCode();
         String serverHash2 = Integer.toHexString(hash2);
 
-        logger.info("ride upload version: " + interfaceVersion + " loc: " + loc + "clientHash: " + clientHash
+        logger.info("interfaceVersion: " + interfaceVersion + " loc: " + loc + "clientHash: " + clientHash
                 + " serverHash: " + serverHash + " serverHash2: " + serverHash2);
 
         return ((serverHash.equals(clientHash)) || (serverHash2.equals(clientHash))

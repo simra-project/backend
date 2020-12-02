@@ -57,7 +57,7 @@
                         </goals>
                         <configuration>
                             <groupId>org.asanchezf</groupId>
-                            <artifactId>SimRaNN_Classifier</artifactId>
+                            <artifactId>SimRaNN_Test</artifactId>
                             <version>1.0-SNAPSHOT</version>
                             <packaging>jar</packaging>
                             <file>${basedir}/lib/classifier.jar</file>
@@ -71,8 +71,8 @@
                         </goals>
                         <configuration>
                             <groupId>ds</groupId>
-                            <artifactId>mvn_package</artifactId>
-                            <version>1.0-SNAPSHOT</version>
+                            <artifactId>preprocessing</artifactId>
+                            <version>_android</version>
                             <packaging>jar</packaging>
                             <file>${basedir}/lib/preprocessing_android.jar</file>
                         </configuration>
@@ -179,14 +179,14 @@
 
         <dependency>
             <groupId>org.asanchezf</groupId>
-            <artifactId>SimRaNN_Classifier</artifactId>
+            <artifactId>SimRaNN_Test</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>preprocessing</groupId>
-            <artifactId>mvn_package</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>ds</groupId>
+            <artifactId>preprocessing</artifactId>
+            <version>_android</version>
         </dependency>
     </dependencies>
 </project>

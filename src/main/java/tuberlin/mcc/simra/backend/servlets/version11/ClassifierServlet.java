@@ -1,4 +1,4 @@
-package tuberlin.mcc.simra.backend.servlets.version10;
+package tuberlin.mcc.simra.backend.servlets.version11;
 
 import static tuberlin.mcc.simra.backend.control.SimRauthenticator.isAuthorized;
 import static tuberlin.mcc.simra.backend.control.Util.directoryAlreadyExists;
@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -24,11 +25,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import preprocessing.AdaptRide;
 
 @SuppressWarnings("Duplicates")
-@Path("10")
+@Path("11")
 public class ClassifierServlet {
 
-    String analyzeFileName = "ride.csv";
     private static String sp = File.separator;
+    private static int INTERFACE_VERSION = 11;
 
 
     @POST
@@ -40,7 +41,7 @@ public class ClassifierServlet {
             @QueryParam("phoneLocation") String phoneLocation, @QueryParam("loc") @DefaultValue("de") String loc,
                                  @QueryParam("clientHash") @DefaultValue("10") String clientHash, String content) {
 
-        if (!isAuthorized(clientHash, -1, loc)) {
+        if (!isAuthorized(clientHash, INTERFACE_VERSION, loc)) {
             return Response.status(400, "not authorized").build();
         }
         if (bikeType == null || phoneLocation == null) {
@@ -48,7 +49,7 @@ public class ClassifierServlet {
                     Response.status(Response.Status.BAD_REQUEST).entity("parameters are mandatory").build());
         }
 
-        String randomString = RandomStringUtils.randomAlphanumeric(10);
+        String randomFileName = RandomStringUtils.randomAlphanumeric(10);
 
         String directory = "./classify";
         if (!directoryAlreadyExists(directory)) {
@@ -62,36 +63,42 @@ public class ClassifierServlet {
         String preContent = "0#0\nkey,lat,lon,ts,bike,childCheckBox,trailerCheckBox,pLoc,incident,i1,i2,i3,i4,i5,i6,i7,i8,i9,scary,desc,i10\n0,0,0,0,"
                 + bikeType + ",0,0," + phoneLocation + ",,,,,,,,,,,,,0\n\n=========================\n";
 
-        overWriteContentToFile(directory + sp + randomString, preContent + content);
+        String simRaRidePath = directory + sp + randomFileName;
+        overWriteContentToFile(simRaRidePath, preContent + content);
+        // System.out.println("classifyRide() | simRaRidePath: " + simRaRidePath);
+        // promptEnterKey();
 
-        String inPath = directory + sp + randomString;
-        String outPath = directory + sp + randomString + ".csv";
-        AdaptRide adaptRide = new AdaptRide(inPath, outPath);
+        String adaptedRidePath = simRaRidePath + ".csv";
+        AdaptRide adaptRide = new AdaptRide(simRaRidePath, adaptedRidePath, randomFileName);
         Classifier c = null;
         try {
-            System.out.println("adaptRide.run_preprocessing();");
             adaptRide.run_preprocessing();
 
-            String rp = outPath;
+            String rp = adaptedRidePath;
             String mp = "./DSNet1_v2.zip";
-            System.out.println("c = new Classifier(rp, mp, 0.50);");
-            c = new Classifier(rp, mp, 0.50);
-            System.out.println("c.run_classifier();");
+            c = new Classifier(rp, mp);
             c.run_classifier();
-            System.out.println("hi");
-            System.out.println(c.getResults());
-            System.out.println("hi2");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        new File(outPath).delete();
-        new File(inPath).delete();
+        new File(adaptedRidePath).delete();
+        new File(simRaRidePath).delete();
+        new File(simRaRidePath.replace(".csv","_timestamps.csv")).delete();
 
         if (c != null) {
-            return Response.ok(JSON.toString(c.getResults())).build();
+            ArrayList<Long> results = c.getResults(adaptedRidePath);
+            // System.out.println("results.size(): " + results.size());
+            return Response.ok(JSON.toString(results)).build();
         } else {
             return Response.ok().build();
         }
+    }
+
+    public static void promptEnterKey(){
+        System.out.println("Press \"ENTER\" to continue...");
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine();
     }
 }

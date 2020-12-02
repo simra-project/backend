@@ -67,7 +67,7 @@ public class UploadServlet {
         }
 
         overWriteContentToFile(directory + sp + key, content);
-
+        logger.info("writing to: " + directory + sp + key);
         StreamingOutput stream = new StreamingOutput() {
             @Override
             public void write(OutputStream os) throws IOException, WebApplicationException {
