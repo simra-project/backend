@@ -82,16 +82,17 @@ public class ClassifierServlet {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        new File(adaptedRidePath).delete();
-        new File(simRaRidePath).delete();
-        new File(simRaRidePath.replace(".csv","_timestamps.csv")).delete();
-
+        
         if (c != null) {
             ArrayList<Long> results = c.getResults(adaptedRidePath);
-            // System.out.println("results.size(): " + results.size());
+            new File(adaptedRidePath).delete();
+            new File(simRaRidePath).delete();
+            new File(simRaRidePath.replace(".csv","_timestamps.csv")).delete();
             return Response.ok(JSON.toString(results)).build();
         } else {
+            new File(adaptedRidePath).delete();
+            new File(simRaRidePath).delete();
+            new File(simRaRidePath.replace(".csv","_timestamps.csv")).delete();
             return Response.ok().build();
         }
     }
