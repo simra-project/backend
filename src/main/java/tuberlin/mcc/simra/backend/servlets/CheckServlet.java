@@ -49,6 +49,32 @@ public class CheckServlet {
     }
 
     @GET
+    @Path("regions-coords")
+    @Produces(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.TEXT_PLAIN)
+    public Response checkRegionsCoordinates(@QueryParam("clientHash") @DefaultValue("10") String clientHash) {
+
+        if (!isAuthorized(clientHash,INTERFACE_VERSION,"checkRegionsCoordinates")) {
+            return Response.status(400, "not authorized").build();
+        }
+
+        String regions = getContentOfTextFile(getBaseFolderPath() + sp + "simRa_regions_coords.config");
+        if (regions.length() > 2) {
+            StreamingOutput stream = new StreamingOutput() {
+                @Override
+                public void write(OutputStream os) throws IOException, WebApplicationException {
+                    Writer writer = new BufferedWriter(new OutputStreamWriter(os));
+                    writer.write(regions);
+                    writer.flush();
+                }
+            };
+            return Response.ok(stream).build();
+        } else {
+            return Response.status(404, "ERROR: config could not be read").build();
+        }
+    }
+
+    @GET
     @Path("news")
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes({ MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN })
