@@ -9,9 +9,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 import static tuberlin.mcc.simra.backend.control.SimRauthenticator.isAuthorized;
@@ -67,12 +64,8 @@ public class UploadServlet {
                 directory = version + sp + loc + sp + "Rides";
                 FileListController.updateKeyValue(hash, password, getBaseFolderPath() + sp + "fileList.csv");
             }
-            if(!directoryAlreadyExists(directory)){
-                try {
-                    Files.createDirectories(Paths.get(directory));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            if(directoryIsFaulty(directory)) {
+                return Response.status(500, "directory error").build();
             }
             if (fileName.startsWith("CRASH")) {
                 String[] fileNameLineArray = fileName.split("_");
@@ -114,12 +107,8 @@ public class UploadServlet {
         } else {
             directory = version + sp + loc + sp + "Rides";
         }
-        if(!directoryAlreadyExists(directory)){
-            try {
-                Files.createDirectories(Paths.get(directory));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if(directoryIsFaulty(directory)) {
+            return Response.status(500, "directory error").build();
         }
 
         logger.info("writing to filePath: " + getBaseFolderPath() + sp + directory + sp + fileHash);

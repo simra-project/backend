@@ -1,14 +1,10 @@
 package tuberlin.mcc.simra.backend.servlets.version11;
 
 import static tuberlin.mcc.simra.backend.control.SimRauthenticator.isAuthorized;
-import static tuberlin.mcc.simra.backend.control.Util.directoryAlreadyExists;
-import static tuberlin.mcc.simra.backend.control.Util.overWriteContentToFile;
+import static tuberlin.mcc.simra.backend.control.Util.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Array;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 import javax.ws.rs.*;
@@ -52,24 +48,17 @@ public class ClassifierServlet {
         String randomFileName = RandomStringUtils.randomAlphanumeric(10);
 
         String directory = "./classify";
-        if (!directoryAlreadyExists(directory)) {
-            try {
-                Files.createDirectories(Paths.get(directory));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if(directoryIsFaulty(directory)) {
+            return Response.status(500, "directory error").build();
         }
-
         String preContent = "0#0\nkey,lat,lon,ts,bike,childCheckBox,trailerCheckBox,pLoc,incident,i1,i2,i3,i4,i5,i6,i7,i8,i9,scary,desc,i10\n0,0,0,0,"
                 + bikeType + ",0,0," + phoneLocation + ",,,,,,,,,,,,,0\n\n=========================\n";
 
         String simRaRidePath = directory + sp + randomFileName;
         overWriteContentToFile(simRaRidePath, preContent + content);
-        // System.out.println("classifyRide() | simRaRidePath: " + simRaRidePath);
-        // promptEnterKey();
 
         String adaptedRidePath = simRaRidePath + ".csv";
-        AdaptRide adaptRide = new AdaptRide(simRaRidePath, adaptedRidePath, randomFileName);
+        AdaptRide adaptRide = new AdaptRide(simRaRidePath);
         Classifier c = null;
         try {
             adaptRide.run_preprocessing();

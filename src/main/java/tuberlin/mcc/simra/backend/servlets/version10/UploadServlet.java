@@ -3,9 +3,7 @@ package tuberlin.mcc.simra.backend.servlets.version10;
 import static java.lang.System.currentTimeMillis;
 import static tuberlin.mcc.simra.backend.control.FileListController.*;
 import static tuberlin.mcc.simra.backend.control.SimRauthenticator.isAuthorized;
-import static tuberlin.mcc.simra.backend.control.Util.directoryAlreadyExists;
-import static tuberlin.mcc.simra.backend.control.Util.getBaseFolderPath;
-import static tuberlin.mcc.simra.backend.control.Util.overWriteContentToFile;
+import static tuberlin.mcc.simra.backend.control.Util.*;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,8 +11,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -56,12 +52,8 @@ public class UploadServlet {
         String password = RandomStringUtils.randomAlphanumeric(10);
         String directory = getBaseFolderPath() + sp + "SimRa" + sp + loc + sp + "Rides";
         updateKeyValue(key, password, getBaseFolderPath() + sp + "fileList.csv");
-        if (!directoryAlreadyExists(directory)) {
-            try {
-                Files.createDirectories(Paths.get(directory));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if(directoryIsFaulty(directory)) {
+            return Response.status(500, "directory error").build();
         }
 
         overWriteContentToFile(directory + sp + key, content);
@@ -92,12 +84,8 @@ public class UploadServlet {
 
         String directory = getBaseFolderPath() + sp + "SimRa" + sp + loc + sp + "Rides";
 
-        if (!directoryAlreadyExists(directory)) {
-            try {
-                Files.createDirectories(Paths.get(directory));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if(directoryIsFaulty(directory)) {
+            return Response.status(500, "directory error").build();
         }
 
         logger.info("writing to filePath: " + directory + sp + fileHash);
@@ -128,12 +116,8 @@ public class UploadServlet {
         String directory = getBaseFolderPath() + sp + "SimRa" + sp + loc + sp + "Profiles";
         updateKeyValue(key, password, getBaseFolderPath() + sp + "fileList.csv");
 
-        if (!directoryAlreadyExists(directory)) {
-            try {
-                Files.createDirectories(Paths.get(directory));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if(directoryIsFaulty(directory)) {
+            return Response.status(500, "directory error").build();
         }
         overWriteContentToFile(directory + sp + key, content);
 
@@ -163,12 +147,8 @@ public class UploadServlet {
         String directory = getBaseFolderPath() + sp + "SimRa" + sp + loc + sp + "Profiles";
         fileHash = fileHash.replace("profile.csv", "");
 
-        if (!directoryAlreadyExists(directory)) {
-            try {
-                Files.createDirectories(Paths.get(directory));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if(directoryIsFaulty(directory)) {
+            return Response.status(500, "directory error").build();
         }
 
         logger.info("writing to filePath: " + directory + sp + fileHash);
@@ -200,12 +180,8 @@ public class UploadServlet {
             e.printStackTrace();
         }
         String directory = getBaseFolderPath() + sp + "SimRa" + sp + loc + sp + "CRASH";
-        if (!directoryAlreadyExists(directory)) {
-            try {
-                Files.createDirectories(Paths.get(directory));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if(directoryIsFaulty(directory)) {
+            return Response.status(500, "directory error").build();
         }
         boolean success = overWriteContentToFile(directory + sp + ts, content);
         if (success) {
@@ -242,12 +218,8 @@ public class UploadServlet {
         } else {
             directory = getBaseFolderPath() + sp + version + sp + loc + sp + "Rides";
         }
-        if (!directoryAlreadyExists(directory)) {
-            try {
-                Files.createDirectories(Paths.get(directory));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if(directoryIsFaulty(directory)) {
+            return Response.status(500, "directory error").build();
         }
 
         logger.info("writing to filePath: " + directory + sp + fileHash);

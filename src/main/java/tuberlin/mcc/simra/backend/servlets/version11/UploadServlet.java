@@ -3,18 +3,9 @@ package tuberlin.mcc.simra.backend.servlets.version11;
 import static java.lang.System.currentTimeMillis;
 import static tuberlin.mcc.simra.backend.control.FileListController.*;
 import static tuberlin.mcc.simra.backend.control.SimRauthenticator.isAuthorized;
-import static tuberlin.mcc.simra.backend.control.Util.directoryAlreadyExists;
-import static tuberlin.mcc.simra.backend.control.Util.getBaseFolderPath;
-import static tuberlin.mcc.simra.backend.control.Util.overWriteContentToFile;
+import static tuberlin.mcc.simra.backend.control.Util.*;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.*;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -29,6 +20,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,12 +51,8 @@ public class UploadServlet {
         String password = RandomStringUtils.randomAlphanumeric(10);
         String directory = getBaseFolderPath() + sp + "SimRa" + sp + loc + sp + "Rides";
         updateKeyValue(key, password, getBaseFolderPath() + sp + "fileList.csv");
-        if (!directoryAlreadyExists(directory)) {
-            try {
-                Files.createDirectories(Paths.get(directory));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if(directoryIsFaulty(directory)) {
+            return Response.status(500, "directory error").build();
         }
 
         overWriteContentToFile(directory + sp + key, content);
@@ -94,12 +83,8 @@ public class UploadServlet {
 
         String directory = "SimRa" + sp + loc + sp + "Rides";
 
-        if (!directoryAlreadyExists(directory)) {
-            try {
-                Files.createDirectories(Paths.get(directory));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if(directoryIsFaulty(directory)) {
+            return Response.status(500, "directory error").build();
         }
 
         logger.info("writing to filePath: " + getBaseFolderPath() + sp + directory + sp + fileHash);
@@ -126,17 +111,13 @@ public class UploadServlet {
         String hash = generateProfileKey();
         String password = RandomStringUtils.randomAlphanumeric(10);
 
-        // if(!FileListController.containsKey(hash)) {
         String directory = "SimRa" + sp + loc + sp + "Profiles";
         FileListController.updateKeyValue(hash, password, getBaseFolderPath() + sp + "fileList.csv");
 
-        if (!directoryAlreadyExists(directory)) {
-            try {
-                Files.createDirectories(Paths.get(directory));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if(directoryIsFaulty(directory)) {
+            return Response.status(500, "directory error").build();
         }
+
         overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + hash, content);
 
         StreamingOutput stream = new StreamingOutput() {
@@ -165,12 +146,8 @@ public class UploadServlet {
         String directory = "SimRa" + sp + loc + sp + "Profiles";
         fileHash = fileHash.replace("profile.csv", "");
 
-        if (!directoryAlreadyExists(directory)) {
-            try {
-                Files.createDirectories(Paths.get(directory));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if(directoryIsFaulty(directory)) {
+            return Response.status(500, "directory error").build();
         }
 
         logger.info("writing to filePath: " + getBaseFolderPath() + sp + directory + sp + fileHash);
@@ -194,7 +171,7 @@ public class UploadServlet {
             return Response.status(400, "not authorized").build();
         }
 
-        String ts = "";
+        String ts;
         try {
             ts = content.split("\n")[1].split(": ")[1];
         } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
@@ -202,13 +179,11 @@ public class UploadServlet {
             e.printStackTrace();
         }
         String directory = "SimRa" + sp + loc + sp + "CRASH";
-        if (!directoryAlreadyExists(directory)) {
-            try {
-                Files.createDirectories(Paths.get(directory));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
+        if(directoryIsFaulty(directory)) {
+            return Response.status(500, "directory error").build();
         }
+
         boolean success = overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + ts, content);
         if (success) {
             return Response.status(200, "OK").build();
@@ -234,6 +209,39 @@ public class UploadServlet {
 
     }
 
+    @POST
+    @Path("debug")
+    @Consumes({MediaType.TEXT_PLAIN, MediaType.MULTIPART_FORM_DATA})
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response uploadDebug(@QueryParam("clientHash") @DefaultValue("10") String clientHash,
+                                @FormDataParam("file") InputStream fileInputStream,
+                                @FormDataParam("file") FormDataContentDisposition contentDispositionHeader) {
+
+        if (!isAuthorized(clientHash,INTERFACE_VERSION,"de")) {
+            return Response.status(400, "not authorized").build();
+        }
+
+        String directory = "Debug";
+        if(directoryIsFaulty(directory)) {
+            return Response.status(500, "directory error").build();
+        }
+
+        try {
+            OutputStream out = new FileOutputStream(new File(directory + sp + RandomStringUtils.randomAlphanumeric(10) + ".zip"));
+            int read;
+            byte[] bytes = new byte[1024];
+            while ((read = fileInputStream.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            out.flush();
+            out.close();
+            return Response.status(200, "OK").build();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Response.status(500, "Error").build();
+        }
+    }
+
     // fileHash: filename, content: content of the file
     private Response overWriteAndReturnStatus(String fileHash, String version, String loc, String content) {
         String sp = File.separator;
@@ -246,12 +254,8 @@ public class UploadServlet {
         } else {
             directory = version + sp + loc + sp + "Rides";
         }
-        if (!directoryAlreadyExists(directory)) {
-            try {
-                Files.createDirectories(Paths.get(getBaseFolderPath() + directory));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if(directoryIsFaulty(directory)) {
+            return Response.status(500, "directory error").build();
         }
 
         logger.info("writing to filePath: " + getBaseFolderPath() + sp + directory + sp + fileHash);

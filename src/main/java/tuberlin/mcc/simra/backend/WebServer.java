@@ -22,10 +22,12 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.StdErrLog;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tuberlin.mcc.simra.backend.servlets.version11.UploadServlet;
 
 public class WebServer {
 
@@ -53,6 +55,8 @@ public class WebServer {
 
         ResourceConfig rConfig = new ResourceConfig();
         rConfig.packages("tuberlin.mcc.simra.backend");
+        rConfig.register(MultiPartFeature.class);
+        rConfig.register(UploadServlet.class);
         ServletHolder jersey = new ServletHolder(new ServletContainer(rConfig));
         servletContext.addServlet(jersey, "/*");
         
@@ -64,7 +68,7 @@ public class WebServer {
             password = responseArray[0];
         }
 
-        if(password != null){
+        if (password != null) {
 
             KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
             keystore.load(new FileInputStream(getBaseFolderPath() + sp + "certificate.jks"), password.toCharArray());

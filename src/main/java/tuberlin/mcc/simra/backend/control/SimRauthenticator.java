@@ -2,12 +2,7 @@ package tuberlin.mcc.simra.backend.control;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tuberlin.mcc.simra.backend.servlets.version10.UploadServlet;
-
-import javax.ws.rs.core.Response;
-
 import static tuberlin.mcc.simra.backend.control.Util.getConfigValues;
-
 import java.io.File;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;

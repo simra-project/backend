@@ -18,10 +18,17 @@ public class Util {
         return System.getProperty("user.dir");
     }
 
-
-    public static Boolean directoryAlreadyExists(String path){
-
-        return Files.exists(Paths.get(path));
+    public static boolean directoryIsFaulty(String path) {
+        if (!Files.exists(Paths.get(path))) {
+            try {
+                Files.createDirectories(Paths.get(path));
+                return false;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void appendTextToFile (String filepath, String content) {
