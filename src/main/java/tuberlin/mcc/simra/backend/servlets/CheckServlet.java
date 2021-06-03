@@ -78,7 +78,7 @@ public class CheckServlet {
     @Path("regions-coords-ID")
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes({MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN})
-    public Response checkRegionsCoordinatesWithID(@QueryParam("clientHash") @DefaultValue("10") String clientHash, @QueryParam("lastSeenRegionsID") @DefaultValue("10") int lastSeenNewsID) {
+    public Response checkRegionsCoordinatesWithID(@QueryParam("clientHash") @DefaultValue("10") String clientHash, @QueryParam("lastSeenRegionsID") @DefaultValue("10") int lastSeenRegionsID) {
 
         if (!isAuthorized(clientHash,INTERFACE_VERSION,"checkRegionsCoordinatesID")) {
             return Response.status(400, "not authorized").build();
@@ -86,7 +86,7 @@ public class CheckServlet {
 
         String regions = getContentOfTextFile(getBaseFolderPath() + sp + "simRa_regions_coords_ID.config");
         if (regions.length() > 2) {
-            if (Integer.parseInt(regions.split(System.lineSeparator())[0].replace("#","")) > lastSeenNewsID) {
+            if (Integer.parseInt(regions.split(System.lineSeparator())[0].replace("#","")) > lastSeenRegionsID) {
                 StreamingOutput stream = new StreamingOutput() {
                     @Override
                     public void write(OutputStream os) throws IOException, WebApplicationException {

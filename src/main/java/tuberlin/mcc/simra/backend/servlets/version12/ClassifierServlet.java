@@ -1,31 +1,32 @@
-package tuberlin.mcc.simra.backend.servlets.version11;
-
-import static tuberlin.mcc.simra.backend.control.SimRauthenticator.isAuthorized;
-import static tuberlin.mcc.simra.backend.control.Util.*;
-
-import java.io.File;
-import java.lang.reflect.Array;
-import java.util.*;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import org.apache.commons.lang3.RandomStringUtils;
-import org.asanchezf.SimRaNN_Test.Classifier;
-import org.eclipse.jetty.util.ajax.JSON;
+package tuberlin.mcc.simra.backend.servlets.version12;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.asanchezf.SimRaNN_Test.Classifier;
+import org.eclipse.jetty.util.ajax.JSON;
 import preprocessing.AdaptRide;
 
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.io.File;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+import static tuberlin.mcc.simra.backend.control.SimRauthenticator.isAuthorized;
+import static tuberlin.mcc.simra.backend.control.Util.directoryIsFaulty;
+import static tuberlin.mcc.simra.backend.control.Util.overWriteContentToFile;
+
 @SuppressWarnings("Duplicates")
-@Path("11")
+@Path("12")
 public class ClassifierServlet {
 
     private static String sp = File.separator;
-    private static int INTERFACE_VERSION = 11;
+    private static int INTERFACE_VERSION = 12;
+    private static long NN_VERSION = 1L;
 
 
     @POST
@@ -63,9 +64,8 @@ public class ClassifierServlet {
         try {
             adaptRide.run_preprocessing();
 
-            String rp = adaptedRidePath;
-            String mp = "./DSNet1_v2.zip";
-            c = new Classifier(rp, mp);
+            String pathToNN = "./DSNet1_v2.zip";
+            c = new Classifier(adaptedRidePath, pathToNN);
             c.run_classifier();
 
         } catch (Exception e) {
@@ -73,7 +73,9 @@ public class ClassifierServlet {
         }
         
         if (c != null) {
-            ArrayList<Long> results = c.getResults(adaptedRidePath);
+            ArrayList<Long> results = new ArrayList<>();
+            results.add(NN_VERSION);
+            results.addAll(c.getResults(adaptedRidePath));
             new File(adaptedRidePath).delete();
             new File(simRaRidePath).delete();
             new File(simRaRidePath.replace(".csv","_timestamps.csv")).delete();
