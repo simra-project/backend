@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.time.LocalDateTime;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -50,7 +51,9 @@ public class UploadServlet {
         String fileBody = content.substring(content.indexOf(System.lineSeparator()) + 1);
         String key = generateRideKey(fileBody);
         String password = RandomStringUtils.randomAlphanumeric(10);
-        String directory = getBaseFolderPath() + sp + "SimRa" + sp + loc + sp + "Rides";
+        String year = String.valueOf(LocalDateTime.now().getYear());
+        String month = String.valueOf(LocalDateTime.now().getMonth().getValue());
+        String directory = getBaseFolderPath() + sp + "Regions" + sp + loc + sp + "Rides" + sp + year + sp + month;
         updateKeyValue(key, password, getBaseFolderPath() + sp + "fileList.csv");
         if(directoryIsFaulty(directory)) {
             return Response.status(500, "directory error").build();
@@ -82,7 +85,7 @@ public class UploadServlet {
             return Response.status(400, "not authorized").build();
         }
 
-        String directory = getBaseFolderPath() + sp + "SimRa" + sp + loc + sp + "Rides";
+        String directory = getBaseFolderPath() + sp + "Regions" + sp + loc + sp + "Rides";
 
         if(directoryIsFaulty(directory)) {
             return Response.status(500, "directory error").build();
@@ -113,7 +116,7 @@ public class UploadServlet {
         String password = RandomStringUtils.randomAlphanumeric(10);
 
         // if(!FileListController.containsKey(key)) {
-        String directory = getBaseFolderPath() + sp + "SimRa" + sp + loc + sp + "Profiles";
+        String directory = getBaseFolderPath() + sp + "Regions" + sp + loc + sp + "Profiles";
         updateKeyValue(key, password, getBaseFolderPath() + sp + "fileList.csv");
 
         if(directoryIsFaulty(directory)) {
@@ -144,7 +147,7 @@ public class UploadServlet {
             return Response.status(400, "not authorized").build();
         }
 
-        String directory = getBaseFolderPath() + sp + "SimRa" + sp + loc + sp + "Profiles";
+        String directory = getBaseFolderPath() + sp + "Regions" + sp + loc + sp + "Profiles";
         fileHash = fileHash.replace("profile.csv", "");
 
         if(directoryIsFaulty(directory)) {
