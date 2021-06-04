@@ -53,6 +53,9 @@ public class UploadServlet {
         String password = RandomStringUtils.randomAlphanumeric(10);
         String year = String.valueOf(LocalDateTime.now().getYear());
         String month = String.valueOf(LocalDateTime.now().getMonth().getValue());
+        if (month.length() == 1) {
+            month = "0" + month;
+        }
         String directory = getBaseFolderPath() + sp + "Regions" + sp + loc + sp + "Rides" + sp + year + sp + month;
         updateKeyValue(key, password, getBaseFolderPath() + sp + "fileList.csv");
         if(directoryIsFaulty(directory)) {
@@ -85,7 +88,12 @@ public class UploadServlet {
             return Response.status(400, "not authorized").build();
         }
 
-        String directory = getBaseFolderPath() + sp + "Regions" + sp + loc + sp + "Rides";
+        String year = String.valueOf(LocalDateTime.now().getYear());
+        String month = String.valueOf(LocalDateTime.now().getMonth().getValue());
+        if (month.length() == 1) {
+            month = "0" + month;
+        }
+        String directory = getBaseFolderPath() + sp + "Regions" + sp + loc + sp + "Rides" + sp + year + sp + month;
 
         if(directoryIsFaulty(directory)) {
             return Response.status(500, "directory error").build();

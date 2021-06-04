@@ -43,6 +43,9 @@ public class UploadServlet {
         String password = RandomStringUtils.randomAlphanumeric(10);
         String year = String.valueOf(LocalDateTime.now().getYear());
         String month = String.valueOf(LocalDateTime.now().getMonth().getValue());
+        if (month.length() == 1) {
+            month = "0" + month;
+        }
         String directory = getBaseFolderPath() + sp + "Regions" + sp + loc + sp + "Rides" + sp + year + sp + month;
         updateKeyValue(key, password, getBaseFolderPath() + sp + "fileList.csv");
         if(directoryIsFaulty(directory)) {
@@ -77,6 +80,9 @@ public class UploadServlet {
 
         String year = String.valueOf(LocalDateTime.now().getYear());
         String month = String.valueOf(LocalDateTime.now().getMonth().getValue());
+        if (month.length() == 1) {
+            month = "0" + month;
+        }
         String directory = getBaseFolderPath() + sp + "Regions" + sp + loc + sp + "Rides" + sp + year + sp + month;
 
         if(directoryIsFaulty(directory)) {
