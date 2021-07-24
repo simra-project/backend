@@ -13,6 +13,6 @@ public class StatusServlet {
     @Produces(MediaType.TEXT_PLAIN)
     public Response getStatus() {
 
-        return Response.status(200, "everything all right").build();
+        return Response.status(200, "everything alright").build();
     }
 }
