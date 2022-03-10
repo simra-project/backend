@@ -42,3 +42,27 @@ Prerequisites:
 1. Run `sudo apt-get install default-jdk`
 2. [Follow this guide for SSL certificates](https://medium.com/@mightywomble/how-to-set-up-nginx-reverse-proxy-with-lets-encrypt-8ef3fd6b79e5)
 3. [Create service to execute](https://dzone.com/articles/run-your-java-application-as-a-service-on-ubuntu) `java -jar app.jar`
+
+## API Endpoints
+
+<URL-to-backend>/check/news?clientHash=<client-hash>&lastSeenNewsID=<int>&newsLanguage=<de or en>
+more info: https://github.com/simra-project/simra-ios/issues/41
+
+<URL-to-backend>/12/classify-ride?clientHash=<client-hash>&bikeType=<int>&phoneLocation=<int>
+more info: https://github.com/simra-project/simra-ios/issues/36
+
+<URL-to-backend>/12/check-regions?clientHash=<client-hash>&lastSeenRegionsID=<int>
+more info: https://github.com/simra-project/simra-ios/issues/35
+
+<URL-to-backend>/12/ride?loc=<region>&clientHash=<client-hash>
+This POST-endpoint uploads rides. The ride is in the body.
+example for <region>: other
+
+<URL-to-backend>/12/profile?loc=<region>&clientHash=<client-hash>
+This POST-endpoint uploads profiles for the first time. The profile is in the body.
+example for <region>: other
+
+<URL-to-backend>/12/profile?fileHash=<key>&filePassword=<value>&loc=<region>&clientHash=<client-hash>
+This PUT-endpoint overwrites an existing profile. The new profile is in the body.
+example for <region>: other
+
