@@ -59,7 +59,7 @@ public class ClassifierServlet {
         overWriteContentToFile(simRaRidePath, preContent + content);
 
         String adaptedRidePath = simRaRidePath + ".csv";
-        AdaptRide adaptRide = new AdaptRide(simRaRidePath);
+        AdaptRide adaptRide = new AdaptRide(simRaRidePath,adaptedRidePath);
         Classifier c = null;
         try {
             adaptRide.run_preprocessing();
