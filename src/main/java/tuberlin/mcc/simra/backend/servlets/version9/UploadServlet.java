@@ -13,6 +13,7 @@ import java.util.Arrays;
 
 import static tuberlin.mcc.simra.backend.control.SimRauthenticator.isAuthorized;
 import static tuberlin.mcc.simra.backend.control.Util.*;
+import static tuberlin.mcc.simra.backend.control.Util.getBackendPath;
 
 @SuppressWarnings("Duplicates")
 @Path("9")
@@ -51,7 +52,7 @@ public class UploadServlet {
             String directory;
             if (fileName.equals("profile.csv")) {
                 directory = version + sp + loc + sp + "Profiles";
-                FileListController.updateKeyValue(hash, password, getBaseFolderPath() + sp + "fileList.csv");
+                FileListController.updateKeyValue(hash, password, getBackendPath() + "fileList.csv");
             } else if (fileName.startsWith("CRASH")) {
                 String ts = "101";
                 try {
@@ -62,7 +63,7 @@ public class UploadServlet {
                 directory = version + sp + loc + sp + "CRASH" + sp + ts;
             } else {
                 directory = version + sp + loc + sp + "Rides";
-                FileListController.updateKeyValue(hash, password, getBaseFolderPath() + sp + "fileList.csv");
+                FileListController.updateKeyValue(hash, password, getBackendPath() + "fileList.csv");
             }
             if(directoryIsFaulty(directory)) {
                 return Response.status(500, "directory error").build();
@@ -70,9 +71,9 @@ public class UploadServlet {
             if (fileName.startsWith("CRASH")) {
                 String[] fileNameLineArray = fileName.split("_");
                 fileName = Arrays.toString(Arrays.copyOfRange(fileNameLineArray,2,(fileNameLineArray.length))).replace("[","").replace(",","").replace("]","");
-                overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + fileName, content);
+                overWriteContentToFile(getBackendPath() + directory + sp + fileName, content);
             } else {
-                overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + hash, content);
+                overWriteContentToFile(getBackendPath() + directory + sp + hash, content);
             }
 
             return Response.status(200, hash + "," + password).build();
@@ -111,8 +112,8 @@ public class UploadServlet {
             return Response.status(500, "directory error").build();
         }
 
-        logger.info("writing to filePath: " + getBaseFolderPath() + sp + directory + sp + fileHash);
-        overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + fileHash, content);
+        logger.info("writing to filePath: " + getBackendPath() + directory + sp + fileHash);
+        overWriteContentToFile(getBackendPath() + directory + sp + fileHash, content);
 
         return Response.status(200, "OK").build();
     }
@@ -126,7 +127,7 @@ public class UploadServlet {
         }
         String sp = File.separator;
 
-        String[] responseArray = getConfigValues(new String[] {"critical","newestAppVersion","urlToNewestAPK"},getBaseFolderPath()+sp+"simRa_backend.config" );
+        String[] responseArray = getConfigValues(new String[] {"critical","newestAppVersion","urlToNewestAPK"}, getBackendPath() + "simRa_backend.config" );
         if (responseArray != null && responseArray.length > 2) {
             return Response.status(200,responseArray[0] + "splitter" + responseArray[1] + "splitter" + responseArray[2]).build();
         } else {

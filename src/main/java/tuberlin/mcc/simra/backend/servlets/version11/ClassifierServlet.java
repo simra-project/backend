@@ -47,7 +47,7 @@ public class ClassifierServlet {
 
         String randomFileName = RandomStringUtils.randomAlphanumeric(10);
 
-        String directory = "./classify";
+        String directory = "./Backend/classify";
         if(directoryIsFaulty(directory)) {
             return Response.status(500, "directory error").build();
         }

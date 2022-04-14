@@ -1,4 +1,4 @@
-package tuberlin.mcc.simra.backend.servlets.version12;
+package tuberlin.mcc.simra.backend.servlets.version13;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -10,10 +10,10 @@ import static tuberlin.mcc.simra.backend.control.SimRauthenticator.isAuthorized;
 import static tuberlin.mcc.simra.backend.control.Util.*;
 
 @SuppressWarnings("Duplicates")
-@Path("12")
+@Path("13")
 public class CheckServlet {
 
-    private static int INTERFACE_VERSION = 12;
+    private static int INTERFACE_VERSION = 13;
     private static String sp = File.separator;
 
     @GET

@@ -1,13 +1,18 @@
 package tuberlin.mcc.simra.backend;
 
 import static tuberlin.mcc.simra.backend.control.FileListController.loadFileCSV;
-import static tuberlin.mcc.simra.backend.control.Util.getBaseFolderPath;
+import static tuberlin.mcc.simra.backend.control.Util.getBackendPath;
 import static tuberlin.mcc.simra.backend.control.Util.getConfigValues;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.*;
 import java.security.KeyStore;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
@@ -25,29 +30,27 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import tuberlin.mcc.simra.backend.servlets.version11.UploadServlet;
+import tuberlin.mcc.simra.backend.control.Util;
+import tuberlin.mcc.simra.backend.servlets.version13.UploadServlet;
 
 public class WebServer {
 
-    private static Logger logger = LoggerFactory.getLogger(WebServer.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(WebServer.class);
     public static String secret;
 
     public static void main(String[] args) throws Exception {
         // Activate Jetty Logging (Development)
-        Log.setLog(new StdErrLog());
+        // Log.setLog(new StdErrLog());
 
         int port = 8082;
         logger.info("Setting up server at port " + port);
 
         Server server = new Server(port);
 
-        logger.info("Current Path " + getBaseFolderPath());
-        String sp = File.separator;
+        logger.info("Current Path " + getBackendPath());
 
         // reading fileList.csv
-        loadFileCSV(getBaseFolderPath() + sp + "fileList.csv");
+        loadFileCSV(getBackendPath() + "fileList.csv");
 
         // servlet handlers
         ServletContextHandler servletContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -63,7 +66,7 @@ public class WebServer {
         // Setup SSL
         String password = null;
         String[] responseArray = getConfigValues(new String[] { "keystore_password" },
-                getBaseFolderPath() + sp + "simRa_security.config");
+                getBackendPath() + "simRa_security.config");
         if (responseArray != null && responseArray.length > 0) {
             password = responseArray[0];
         }
@@ -71,7 +74,7 @@ public class WebServer {
         if (password != null) {
 
             KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-            keystore.load(new FileInputStream(getBaseFolderPath() + sp + "certificate.jks"), password.toCharArray());
+            keystore.load(new FileInputStream(getBackendPath() + "certificate.jks"), password.toCharArray());
             
             SslContextFactory cf = new SslContextFactory();
             cf.setKeyStore(keystore);
@@ -104,7 +107,24 @@ public class WebServer {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        logger.info("Server started successfully");
+        /*new Thread(new Util.ClassificationServerStarter()).start();
+        System.out.println("Classification Server started");
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                ProcessBuilder classificationServerStopper = new ProcessBuilder("bash", "-c", "kill -9 $(pgrep -f \"classification_server.py\")");
+                classificationServerStopper.redirectErrorStream(true);
+                Process process;
+                try {
+                    process = classificationServerStopper.start();
+                    process.waitFor();
+                    System.out.println("Classification Server stopped");
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+        }});*/
+
+        System.out.println("Server started successfully");
     }
 
 }

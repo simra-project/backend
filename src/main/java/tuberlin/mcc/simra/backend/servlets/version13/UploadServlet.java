@@ -1,40 +1,31 @@
-package tuberlin.mcc.simra.backend.servlets.version11;
-
-import static java.lang.System.currentTimeMillis;
-import static tuberlin.mcc.simra.backend.control.FileListController.*;
-import static tuberlin.mcc.simra.backend.control.SimRauthenticator.isAuthorized;
-import static tuberlin.mcc.simra.backend.control.Util.*;
-
-import java.io.*;
-import java.time.LocalDateTime;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
+package tuberlin.mcc.simra.backend.servlets.version13;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import tuberlin.mcc.simra.backend.control.FileListController;
 
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
+import java.io.*;
+import java.time.LocalDateTime;
+
+import static java.lang.System.currentTimeMillis;
+import static tuberlin.mcc.simra.backend.control.FileListController.*;
+import static tuberlin.mcc.simra.backend.control.SimRauthenticator.isAuthorized;
+import static tuberlin.mcc.simra.backend.control.Util.*;
+
 @SuppressWarnings("Duplicates")
-@Path("11")
+@Path("13")
 public class UploadServlet {
 
     private static Logger logger = LoggerFactory.getLogger(UploadServlet.class.getName());
     private static String sp = File.separator;
-    private static int INTERFACE_VERSION = 11;
+    private static int INTERFACE_VERSION = 13;
 
     @POST
     @Path("ride")
@@ -189,7 +180,7 @@ public class UploadServlet {
             ts = String.valueOf(currentTimeMillis());
             e.printStackTrace();
         }
-        String directory = "SimRa" + sp + loc + sp + "CRASH";
+        String directory = "Regions" + sp + loc + sp + "CRASH";
 
         if(directoryIsFaulty(directory)) {
             return Response.status(500, "directory error").build();

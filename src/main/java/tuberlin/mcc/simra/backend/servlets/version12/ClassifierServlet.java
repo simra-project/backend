@@ -48,7 +48,7 @@ public class ClassifierServlet {
 
         String randomFileName = RandomStringUtils.randomAlphanumeric(10);
 
-        String directory = "./classify";
+        String directory = "./Backend/classify";
         if(directoryIsFaulty(directory)) {
             return Response.status(500, "directory error").build();
         }
@@ -59,7 +59,7 @@ public class ClassifierServlet {
         overWriteContentToFile(simRaRidePath, preContent + content);
 
         String adaptedRidePath = simRaRidePath + ".csv";
-        AdaptRide adaptRide = new AdaptRide(simRaRidePath,adaptedRidePath);
+        AdaptRide adaptRide = new AdaptRide(simRaRidePath);
         Classifier c = null;
         try {
             adaptRide.run_preprocessing();

@@ -1,0 +1,5 @@
+#1
+-This is a normal news element in #041035 (same color as the ok button).
+*This is an important news element in #FF4081.
+iThis message is only displayed on iOS devices.
+aThis message is only displayed on Android devices.

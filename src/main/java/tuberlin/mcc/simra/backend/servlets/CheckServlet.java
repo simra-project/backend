@@ -32,7 +32,7 @@ public class CheckServlet {
             return Response.status(400, "not authorized").build();
         }
 
-        String regions = getContentOfTextFile(getBaseFolderPath() + sp + "simRa_regions.config");
+        String regions = getContentOfTextFile(getBackendPath() + "simRa_regions.config");
         if (regions.length() > 2) {
             StreamingOutput stream = new StreamingOutput() {
                 @Override
@@ -58,7 +58,7 @@ public class CheckServlet {
             return Response.status(400, "not authorized").build();
         }
 
-        String regions = getContentOfTextFile(getBaseFolderPath() + sp + "simRa_regions_coords.config");
+        String regions = getContentOfTextFile(getBackendPath() + "simRa_regions_coords.config");
         if (regions.length() > 2) {
             StreamingOutput stream = new StreamingOutput() {
                 @Override
@@ -84,7 +84,7 @@ public class CheckServlet {
             return Response.status(400, "not authorized").build();
         }
 
-        String regions = getContentOfTextFile(getBaseFolderPath() + sp + "simRa_regions_coords_ID.config");
+        String regions = getContentOfTextFile(getBackendPath() + "simRa_regions_coords_ID.config");
         if (regions.length() > 2) {
             if (Integer.parseInt(regions.split(System.lineSeparator())[0].replace("#","")) > lastSeenRegionsID) {
                 StreamingOutput stream = new StreamingOutput() {
@@ -114,7 +114,7 @@ public class CheckServlet {
             return Response.status(400, "not authorized").build();
         }
 
-        String newsPath = getBaseFolderPath() + sp + "simRa_news_" + newsLanguage + ".config";
+        String newsPath = getBackendPath() + "simRa_news_" + newsLanguage + ".config";
         String news = getContentOfTextFile(newsPath);
         if (news.length() > 2) {
             if (Integer.parseInt(news.split(System.lineSeparator())[0].replace("#","")) > lastSeenNewsID) {
@@ -145,7 +145,7 @@ public class CheckServlet {
             return Response.status(400, "not authorized").build();
         }
 
-        String news = getContentOfTextFile(getBaseFolderPath() + sp + "simRa_news_de.config");
+        String news = getContentOfTextFile(getBackendPath() + "simRa_news_de.config");
         if (news.length() > 2) {
             StreamingOutput stream = new StreamingOutput() {
                 @Override
@@ -171,7 +171,7 @@ public class CheckServlet {
             return Response.status(400, "not authorized").build();
         }
 
-        String news = getContentOfTextFile(getBaseFolderPath() + sp + "simRa_news_en.config");
+        String news = getContentOfTextFile(getBackendPath() + "simRa_news_en.config");
         if (news.length() > 2) {
             StreamingOutput stream = new StreamingOutput() {
                 @Override
@@ -199,7 +199,7 @@ public class CheckServlet {
         }
 
         String[] responseArray = getConfigValues(new String[] { "critical", "newestAppVersion", "urlToNewestAPK" },
-                getBaseFolderPath() + sp + "simRa_backend.config");
+                getBackendPath() + "simRa_backend.config");
         if (responseArray != null && responseArray.length > 2) {
             StreamingOutput stream = new StreamingOutput() {
                 @Override

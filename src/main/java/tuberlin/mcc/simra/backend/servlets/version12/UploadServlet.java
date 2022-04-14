@@ -46,8 +46,8 @@ public class UploadServlet {
         if (month.length() == 1) {
             month = "0" + month;
         }
-        String directory = getBaseFolderPath() + sp + "Regions" + sp + loc + sp + "Rides" + sp + year + sp + month;
-        updateKeyValue(key, password, getBaseFolderPath() + sp + "fileList.csv");
+        String directory = getBackendPath() + "Regions" + sp + loc + sp + "Rides" + sp + year + sp + month;
+        updateKeyValue(key, password, getBackendPath() + "fileList.csv");
         if(directoryIsFaulty(directory)) {
             return Response.status(500, "directory error").build();
         }
@@ -83,14 +83,14 @@ public class UploadServlet {
         if (month.length() == 1) {
             month = "0" + month;
         }
-        String directory = getBaseFolderPath() + sp + "Regions" + sp + loc + sp + "Rides" + sp + year + sp + month;
+        String directory = getBackendPath() + "Regions" + sp + loc + sp + "Rides" + sp + year + sp + month;
 
         if(directoryIsFaulty(directory)) {
             return Response.status(500, "directory error").build();
         }
 
-        logger.info("writing to filePath: " + getBaseFolderPath() + sp + directory + sp + fileHash);
-        boolean success = overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + fileHash, content);
+        logger.info("writing to filePath: " + getBackendPath() + directory + sp + fileHash);
+        boolean success = overWriteContentToFile(getBackendPath() + sp + directory + sp + fileHash, content);
         if (success) {
             return Response.status(200, "OK").build();
         } else {
@@ -114,13 +114,13 @@ public class UploadServlet {
         String password = RandomStringUtils.randomAlphanumeric(10);
 
         String directory = "Regions" + sp + loc + sp + "Profiles";
-        FileListController.updateKeyValue(hash, password, getBaseFolderPath() + sp + "fileList.csv");
+        FileListController.updateKeyValue(hash, password, getBackendPath() + "fileList.csv");
 
         if(directoryIsFaulty(directory)) {
             return Response.status(500, "directory error").build();
         }
 
-        overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + hash, content);
+        overWriteContentToFile(getBackendPath() + directory + sp + hash, content);
 
         StreamingOutput stream = new StreamingOutput() {
             @Override
@@ -152,8 +152,8 @@ public class UploadServlet {
             return Response.status(500, "directory error").build();
         }
 
-        logger.info("writing to filePath: " + getBaseFolderPath() + sp + directory + sp + fileHash);
-        boolean success = overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + fileHash, content);
+        logger.info("writing to filePath: " + getBackendPath() + directory + sp + fileHash);
+        boolean success = overWriteContentToFile(getBackendPath() + directory + sp + fileHash, content);
 
         if (success) {
             return Response.status(200, "OK").build();
@@ -186,7 +186,7 @@ public class UploadServlet {
             return Response.status(500, "directory error").build();
         }
 
-        boolean success = overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + ts, content);
+        boolean success = overWriteContentToFile(getBackendPath() + directory + sp + ts, content);
         if (success) {
             return Response.status(200, "OK").build();
         } else {
@@ -260,8 +260,8 @@ public class UploadServlet {
             return Response.status(500, "directory error").build();
         }
 
-        logger.info("writing to filePath: " + getBaseFolderPath() + sp + directory + sp + fileHash);
-        boolean success = overWriteContentToFile(getBaseFolderPath() + sp + directory + sp + fileHash, content);
+        logger.info("writing to filePath: " + getBackendPath() + directory + sp + fileHash);
+        boolean success = overWriteContentToFile(getBackendPath() + directory + sp + fileHash, content);
         if (success) {
             return Response.status(200, "OK").build();
         } else {

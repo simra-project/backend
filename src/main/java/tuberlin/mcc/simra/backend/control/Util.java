@@ -14,8 +14,8 @@ public class Util {
 
     private static Logger logger = LoggerFactory.getLogger(UploadServlet.class.getName());
 
-    public static String getBaseFolderPath() {
-        return System.getProperty("user.dir");
+    public static String getBackendPath() {
+        return (System.getProperty("user.dir") + File.separator + "Backend" + File.separator);
     }
 
     public static boolean directoryIsFaulty(String path) {
@@ -103,4 +103,16 @@ public class Util {
         }
         return results;
     }
+
+    /*public static class ClassificationServerStarter implements Runnable {
+        public void run() {
+            try {
+                ProcessBuilder classificationServerStarter = new ProcessBuilder("bash", "./Backend/start_classification_server.sh");
+                classificationServerStarter.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }*/
+
     }

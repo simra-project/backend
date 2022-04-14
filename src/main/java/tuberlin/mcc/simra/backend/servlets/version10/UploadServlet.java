@@ -56,8 +56,8 @@ public class UploadServlet {
         if (month.length() == 1) {
             month = "0" + month;
         }
-        String directory = getBaseFolderPath() + sp + "Regions" + sp + loc + sp + "Rides" + sp + year + sp + month;
-        updateKeyValue(key, password, getBaseFolderPath() + sp + "fileList.csv");
+        String directory = getBackendPath() + "Regions" + sp + loc + sp + "Rides" + sp + year + sp + month;
+        updateKeyValue(key, password, getBackendPath() + "fileList.csv");
         if(directoryIsFaulty(directory)) {
             return Response.status(500, "directory error").build();
         }
@@ -93,7 +93,7 @@ public class UploadServlet {
         if (month.length() == 1) {
             month = "0" + month;
         }
-        String directory = getBaseFolderPath() + sp + "Regions" + sp + loc + sp + "Rides" + sp + year + sp + month;
+        String directory = getBackendPath() + "Regions" + sp + loc + sp + "Rides" + sp + year + sp + month;
 
         if(directoryIsFaulty(directory)) {
             return Response.status(500, "directory error").build();
@@ -124,8 +124,8 @@ public class UploadServlet {
         String password = RandomStringUtils.randomAlphanumeric(10);
 
         // if(!FileListController.containsKey(key)) {
-        String directory = getBaseFolderPath() + sp + "Regions" + sp + loc + sp + "Profiles";
-        updateKeyValue(key, password, getBaseFolderPath() + sp + "fileList.csv");
+        String directory = getBackendPath() + "Regions" + sp + loc + sp + "Profiles";
+        updateKeyValue(key, password, getBackendPath() + "fileList.csv");
 
         if(directoryIsFaulty(directory)) {
             return Response.status(500, "directory error").build();
@@ -155,7 +155,7 @@ public class UploadServlet {
             return Response.status(400, "not authorized").build();
         }
 
-        String directory = getBaseFolderPath() + sp + "Regions" + sp + loc + sp + "Profiles";
+        String directory = getBackendPath() + "Regions" + sp + loc + sp + "Profiles";
         fileHash = fileHash.replace("profile.csv", "");
 
         if(directoryIsFaulty(directory)) {
@@ -190,7 +190,7 @@ public class UploadServlet {
             ts = String.valueOf(currentTimeMillis());
             e.printStackTrace();
         }
-        String directory = getBaseFolderPath() + sp + "SimRa" + sp + loc + sp + "CRASH";
+        String directory = getBackendPath() + "SimRa" + sp + loc + sp + "CRASH";
         if(directoryIsFaulty(directory)) {
             return Response.status(500, "directory error").build();
         }
@@ -224,10 +224,10 @@ public class UploadServlet {
         String directory;
 
         if (fileHash.contains("profile.csv")) {
-            directory = getBaseFolderPath() + sp + version + sp + loc + sp + "Profiles";
+            directory = getBackendPath() + version + sp + loc + sp + "Profiles";
             fileHash = fileHash.replace("profile.csv", "");
         } else {
-            directory = getBaseFolderPath() + sp + version + sp + loc + sp + "Rides";
+            directory = getBackendPath() + version + sp + loc + sp + "Rides";
         }
         if(directoryIsFaulty(directory)) {
             return Response.status(500, "directory error").build();

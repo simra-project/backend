@@ -19,7 +19,7 @@ public class SimRauthenticator {
         String sp = File.separator;
 
         String[] responseArray = getConfigValues(new String[] { "hash_prefix" },
-                absolutePath + sp + "simRa_security.config");
+                absolutePath + sp + "Backend" + sp + "simRa_security.config");
         if (responseArray != null && responseArray.length > 0) {
             prefix = responseArray[0];
         }
