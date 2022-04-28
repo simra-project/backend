@@ -48,21 +48,21 @@ Prerequisites:
 <URL-to-backend>/check/news?clientHash=<client-hash>&lastSeenNewsID=<int>&newsLanguage=<de or en>
 more info: https://github.com/simra-project/simra-ios/issues/41
 
-<URL-to-backend>/12/classify-ride?clientHash=<client-hash>&bikeType=<int>&phoneLocation=<int>
+<URL-to-backend>/<API-Version>/classify-ride-cyclesense?clientHash=<client-hash>&os=<Android or iOS>
 more info: https://github.com/simra-project/simra-ios/issues/36
 
-<URL-to-backend>/12/check-regions?clientHash=<client-hash>&lastSeenRegionsID=<int>
+<URL-to-backend>/<API-Version>/check-regions?clientHash=<client-hash>&lastSeenRegionsID=<int>
 more info: https://github.com/simra-project/simra-ios/issues/35
 
-<URL-to-backend>/12/ride?loc=<region>&clientHash=<client-hash>
+<URL-to-backend>/<API-Version>/ride?loc=<region>&clientHash=<client-hash>
 This POST-endpoint uploads rides. The ride is in the body.
 example for <region>: other
 
-<URL-to-backend>/12/profile?loc=<region>&clientHash=<client-hash>
+<URL-to-backend>/<API-Version>/profile?loc=<region>&clientHash=<client-hash>
 This POST-endpoint uploads profiles for the first time. The profile is in the body.
 example for <region>: other
 
-<URL-to-backend>/12/profile?fileHash=<key>&filePassword=<value>&loc=<region>&clientHash=<client-hash>
+<URL-to-backend>/<API-Version>/profile?fileHash=<key>&filePassword=<value>&loc=<region>&clientHash=<client-hash>
 This PUT-endpoint overwrites an existing profile. The new profile is in the body.
 example for <region>: other
 
